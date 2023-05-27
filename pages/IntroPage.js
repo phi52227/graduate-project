@@ -31,7 +31,7 @@ export default function Loading({ navigation, route }) {
       >
         <TouchableOpacity
           style={styles.touchToStart}
-          onPress={() => navigation.navigate("Register")}
+          onPress={() => navigation.reset({ routes: [{ name: "Register" }] })}
         >
           <View style={styles.titleview}>
             <Text style={styles.title}>TITLE</Text>
