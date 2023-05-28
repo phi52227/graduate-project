@@ -16,7 +16,7 @@ import {
 const width = Dimensions.get("window").width;
 const theme = Appearance.getColorScheme();
 
-export default function Loading({ navigation, route }) {
+export default function IntroPage({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -31,6 +31,7 @@ export default function Loading({ navigation, route }) {
       >
         <TouchableOpacity
           style={styles.touchToStart}
+          activeOpacity={1}
           onPress={() => navigation.reset({ routes: [{ name: "Register" }] })}
         >
           <View style={styles.titleview}>
