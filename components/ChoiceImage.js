@@ -20,7 +20,7 @@ export default function ChoiceImage(props) {
   const [choiceImageText, setText] = useState("프로필 이미지를 선택해주세요");
   const content = props.content;
   /** 이미지 클릭했을 때 동작하는 함수
-   * 지금음 선택된 이미지 Text를 변경하고 있음
+   * 지금음 선택된 이미지 Text를 변경하고 있음..
    */
   function touchImage(data) {
     if (choiceImageText == "프로필 이미지를 선택해주세요")

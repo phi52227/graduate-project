@@ -39,7 +39,7 @@ export default function Register({ navigation, route }) {
   /** 사용자 등록 버튼을 눌렀을 때 작동하는 함수
    * 여기에는 사용자명을 입력하고 이미지를 선택했는지에 대한 여부를 확인하여
    * 데이터베이스에 사용자 정보를 저장하는 역할을 하는 함수 넣기
-   * 동시에 서버 선택화면으로 이동, navigation stack reset
+   * 동시에 서버 선택화면으로 이동, navigation stack reset.
    */
   function register(text, uri) {
     //인수를 데이터베이스에 저장하고 페이지 전환하기
