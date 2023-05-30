@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
-  ScrollView,
   Text,
   StyleSheet,
   SafeAreaView,
@@ -14,21 +13,29 @@ import {
 } from "react-native";
 import data from "../profileImg.json";
 import ChoiceImage from "../components/ChoiceImage";
+import Appcontext from "../components/AppContext";
+import MainTitle from "../components/MainTitle";
 
 export default function Register({ navigation, route }) {
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const image_idx = -1;
+  }, []);
 
   const [text, setText] = React.useState("사용자명을 입력해주세요");
   const [isImage, setISImageState] = useState(false);
   const [imageUri, setUri] = useState([]);
-
+  const [image_idx, setImage_idx] = useState(-1);
+  //context 사용하기
+  const myContext = useContext(Appcontext);
   /** ChoiceImage 컴포넌트에서 이미지를 터치했을 때 실행되는 함수
    * 여기에 이미지가 선택되었는지 확인하는 기능을 추가하면 될 듯.
    */
-  function touchFunction(source) {
+  function touchFunction(source, idx) {
     setISImageState(true);
     setUri(source);
+    setImage_idx(idx);
   }
+
   function notifyMessage(msg) {
     if (Platform.OS === "android") {
       ToastAndroid.show(msg, ToastAndroid.SHORT);
@@ -44,6 +51,8 @@ export default function Register({ navigation, route }) {
   function register(text, uri) {
     //인수를 데이터베이스에 저장하고 페이지 전환하기
     console.log(text, uri);
+    myContext.setUserState(text, uri);
+    myContext.setIdx(image_idx);
     navigation.reset({ routes: [{ name: "ServerChoice" }] });
   }
 
@@ -60,11 +69,11 @@ export default function Register({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <MainTitle text={"사용자 등록"} />
       <View
         style={styles.innerContainer}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        <Text style={styles.mainTitleText}>사용자 등록</Text>
         <Text style={styles.titleText}>사용자명</Text>
         <TextInput
           style={styles.textInput}
@@ -78,7 +87,7 @@ export default function Register({ navigation, route }) {
       <ChoiceImage
         content={data.image}
         key={data.image.idx}
-        touchFunction={(value) => touchFunction(value)}
+        touchFunction={(value, number) => touchFunction(value, number)}
       />
       <TouchableOpacity
         style={styles.okButton}
@@ -107,11 +116,17 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 20,
   },
+  mainTitleContainer: {
+    width: "100%",
+    borderBottomWidth: 2,
+    borderBottomColor: "black",
+  },
   mainTitleText: {
     fontSize: 30,
     fontWeight: "700",
     textAlign: "center",
     marginTop: 20,
+    marginBottom: 10,
   },
   titleText: {
     width: "100%",

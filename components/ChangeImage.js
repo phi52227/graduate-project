@@ -10,23 +10,30 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const dev_width = Dimensions.get("window").width;
+const dev_width = Dimensions.get("window").width * 0.8;
 const dev_width_90 = dev_width * 0.9 - 4;
 
-export default function ChoiceImage(props) {
-  useEffect(() => {}, []);
-  const [imageName, setImageState] = useState("");
-  const [selectedImageidx, setImageIdx] = useState(-1);
-  const [choiceImageText, setText] = useState("프로필 이미지를 선택해주세요");
+export default function ChangeImage(props) {
+  useEffect(() => {
+    setImageName(content[myContext.userSettingImageIdx].name);
+    setImageIdx(myContext.userSettingImageIdx);
+  }, []);
   const content = props.content;
+  const myContext = props.myContext;
+
+  const [imageName, setImageName] = useState(
+    content[myContext.userSettingImageIdx].name
+  );
+  const [selectedImageidx, setImageIdx] = useState(
+    myContext.userSettingImageIdx
+  );
+
   /** 이미지 클릭했을 때 동작하는 함수
    * 지금음 선택된 이미지 Text를 변경하고 있음..
    */
   function touchImage(data) {
-    if (choiceImageText == "프로필 이미지를 선택해주세요")
-      setText("선택된 이미지 : ");
     setImageIdx(data.idx);
-    setImageState(data.name);
+    setImageName(data.name);
     props.touchFunction(data.image, data.idx);
   }
 
@@ -98,8 +105,11 @@ export default function ChoiceImage(props) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.descText}>
+        변경할 프로필 이미지를{"\n"}선택해주세요
+      </Text>
       <View style={styles.textBox}>
-        <Text style={styles.choiceText}>{choiceImageText}</Text>
+        <Text style={styles.choiceText}>선택된 이미지 : </Text>
         <Text style={styles.imageText}>{imageName}</Text>
       </View>
       <ScrollView style={styles.imageChoiceContainer}>
@@ -114,6 +124,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     alignItems: "center",
+    paddingBottom: 10,
   },
   imageChoiceContainer: {
     width: "90%",
@@ -162,6 +173,12 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginBottom: 10,
     color: "red",
+  },
+  descText: {
+    fontSize: 18,
+    fontWeight: "700",
+    textAlign: "center",
+    marginVertical: 10,
   },
 });
 

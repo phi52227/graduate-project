@@ -2,8 +2,8 @@
   "image": [
     {
       "idx": 0,
-      "image": "https://cdn.pixabay.com/photo/2016/12/21/17/11/signe-1923369_1280.png",
-      "name": "사용자 이미지"
+      "image": "https://cdn.pixabay.com/photo/2023/02/10/14/26/sheep-7780989_1280.png",
+      "name": "양"
     },
     {
       "idx": 1,
@@ -49,11 +49,6 @@
       "idx": 9,
       "image": "https://cdn.pixabay.com/photo/2023/02/24/19/21/dog-7811721_1280.jpg",
       "name": "강아지3"
-    },
-    {
-      "idx": 10,
-      "image": "https://cdn.pixabay.com/photo/2023/02/10/14/26/sheep-7780989_1280.png",
-      "name": "양"
     }
   ]
 }
