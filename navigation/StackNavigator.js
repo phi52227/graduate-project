@@ -6,6 +6,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import IntroPage from "../pages/IntroPage";
 import Register from "../pages/Register";
 import ServerChoice from "../pages/ServerChoice";
+import ServerCreate from "../pages/ServerCreate";
+import ServerJoin from "../pages/ServerJoin";
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
@@ -33,6 +35,8 @@ const StackNavigator = () => {
       <Stack.Screen name="IntroPage" component={IntroPage} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="ServerChoice" component={ServerChoice} />
+      <Stack.Screen name="ServerCreate" component={ServerCreate} />
+      <Stack.Screen name="ServerJoin" component={ServerJoin} />
     </Stack.Navigator>
   );
 };

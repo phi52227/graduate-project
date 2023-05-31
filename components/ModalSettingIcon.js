@@ -7,6 +7,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
 import Modal from "react-native-modal";
 import ChangeImage from "./ChangeImage";
@@ -29,6 +30,11 @@ export default function ModalsettingIcon(props) {
     myContext.setUserState(myContext.userSettingName, changeImage);
     myContext.setIdx(changeIdx);
     props.modalVisible();
+    if (Platform.OS === "android") {
+      ToastAndroid.show("프로필 이미지가 변경되었습니다.", ToastAndroid.SHORT);
+    } else {
+      Alert.alert("프로필 이미지가 변경되었습니다.");
+    }
   }
 
   return (

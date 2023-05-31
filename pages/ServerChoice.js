@@ -14,6 +14,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import Appcontext from "../components/AppContext";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
+import ServerCreate from "./ServerCreate";
+import ServerJoin from "./ServerJoin";
 
 const dev_width = Dimensions.get("window").width;
 
@@ -28,7 +30,26 @@ export default function ServerChoice({ navigation, route }) {
       <MainTitle text={"서버 선택 화면"} />
       <Profile />
       <ScrollView style={styles.scrollview}></ScrollView>
-      <View style={styles.unnderScroll}></View>
+      <View style={styles.unnderScroll}>
+        <TouchableOpacity
+          style={styles.button}
+          activeOpacity={0.4}
+          onPress={() => {
+            navigation.navigate("ServerCreate");
+          }}
+        >
+          <Text style={styles.buttonText}>서버 생성</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          activeOpacity={0.4}
+          onPress={() => {
+            navigation.navigate("ServerJoin");
+          }}
+        >
+          <Text style={styles.buttonText}>서버 참가</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -39,29 +60,31 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   scrollview: {
     width: "90%",
-    // backgroundColor: "blue",
     marginTop: 20,
+    borderWidth: 1,
   },
   unnderScroll: {
     width: "90%",
-    height: "15%",
+    aspectRatio: 4 / 1,
     marginBottom: 20,
-    // backgroundColor: "red",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  mainTitleContainer: {
-    width: "100%",
-    borderBottomWidth: 2,
-    borderBottomColor: "black",
+  button: {
+    width: "45%",
+    borderWidth: 2,
+    aspectRatio: 3 / 1,
+    // margin: 20,
+    justifyContent: "center",
   },
-  mainTitleText: {
-    fontSize: 30,
-    fontWeight: "700",
+  buttonText: {
+    fontSize: 20,
+    fontWeight: "500",
     textAlign: "center",
-    marginTop: 20,
-    marginBottom: 10,
   },
 });
