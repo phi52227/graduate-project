@@ -8,32 +8,13 @@ import {
   ToastAndroid,
 } from "react-native";
 import Modal from "react-native-modal";
-import ChangeImage from "./ChangeImage";
-import data from "../profileImg.json";
 
 import Appcontext from "./AppContext";
+import { TextInput } from "react-native-gesture-handler";
 
-export default function ModalsettingIcon(props) {
+export default function ServerChoice(props, { navigation }) {
   const myContext = useContext(Appcontext);
-
-  const [changeImage, setChangeImage] = useState([]);
-  const [changeIdx, setChangeIdx] = useState([]);
-
-  function touchFunction(source, idx) {
-    setChangeImage(source);
-    setChangeIdx(idx);
-  }
-
-  function saveFunction() {
-    myContext.setUserState(myContext.userSettingName, changeImage);
-    myContext.setIdx(changeIdx);
-    props.modalVisible();
-    if (Platform.OS === "android") {
-      ToastAndroid.show("프로필 이미지가 변경되었습니다.", ToastAndroid.SHORT);
-    } else {
-      Alert.alert("프로필 이미지가 변경되었습니다.");
-    }
-  }
+  const [text, setText] = React.useState("비밀번호");
 
   return (
     <Modal
@@ -57,29 +38,43 @@ export default function ModalsettingIcon(props) {
             onPress={() => props.modalVisible()}
           />
         </View>
+
+        {/* 여기 내용이 들어간다 */}
         <View style={styles.modalContainer}>
-          <ChangeImage
-            content={data.image}
-            touchFunction={(value, number) => touchFunction(value, number)}
-            myContext={myContext}
-          />
-          <View style={styles.buttonView}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => props.modalVisible()}
-              activeOpacity={1}
-            >
-              <Text style={styles.buttonText}>취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => saveFunction()}
-              activeOpacity={1}
-            >
-              <Text style={styles.buttonText}>저장</Text>
-            </TouchableOpacity>
+          <View style={styles.textView}>
+            <Text style={styles.serverText}>{props.name + " 서버"}</Text>
+            <Text style={styles.descText}>
+              {props.name + " 서버에 참가하려면\n비밀번호를 입력해주세요"}
+            </Text>
+          </View>
+          <View style={styles.passwordView}>
+            <TextInput
+              style={styles.textInput}
+              onChangeText={setText}
+              value={text}
+              clearTextOnFocus={true}
+              onFocus={() => setText("")}
+            />
+            <View style={styles.buttonView}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => props.modalVisible()}
+                activeOpacity={1}
+              >
+                <Text style={styles.buttonText}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => saveFunction()}
+                activeOpacity={1}
+              >
+                <Text style={styles.buttonText}>서버 참가</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
+        {/* 여기까지 */}
+
         <View style={styles.middleSideContainer}>
           <TouchableOpacity
             style={styles.touchOutside}
@@ -111,7 +106,7 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     width: "100%",
-    flex: 80,
+    flex: 60,
     flexDirection: "row",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
@@ -128,24 +123,23 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     alignSelf: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     flex: 95,
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#f2f2f2",
     borderWidth: 2,
   },
   touchOutside: {
     width: "100%",
     height: "100%",
-    backgroundColor: "(0, 0, 0, 0.5)",
   },
   buttonView: {
     width: "90%",
-    height: "10%",
+    height: 70,
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
-    marginBottom: 10,
     alignSelf: "center",
+    marginBottom: 20,
   },
   button: {
     width: "45%",
@@ -153,9 +147,47 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
+    borderRadius: 10,
   },
   buttonText: {
     fontSize: 20,
     fontWeight: "700",
+    textAlign: "center",
+  },
+  serverText: {
+    fontSize: 35,
+    fontWeight: "700",
+    textAlign: "center",
+    flexWrap: "wrap",
+    marginTop: 20,
+  },
+  descText: {
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: "center",
+    flexWrap: "wrap",
+    color: "#424242",
+
+    marginBottom: 20,
+  },
+  textView: {
+    width: "100%",
+    alignContent: "center",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  passwordView: {
+    width: "100%",
+    alignContent: "center",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  textInput: {
+    width: "90%",
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    alignSelf: "center",
   },
 });
