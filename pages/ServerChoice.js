@@ -9,21 +9,38 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Alert,
+  BackHandler,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Appcontext from "../components/AppContext";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
-
-import ServerJoin from "../components/ServerJoin";
+import AppContext from "../components/AppContext";
 
 const dev_width = Dimensions.get("window").width;
 
 export default function ServerChoice({ navigation, route }) {
   useEffect(() => {
-    // console.log(myContext.userSettingImageIdx);
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
   }, []);
-  const myContext = useContext(Appcontext);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const modalVisible = () => {
@@ -35,14 +52,25 @@ export default function ServerChoice({ navigation, route }) {
       <MainTitle text={"서버 선택 화면"} />
       <Profile />
       <ScrollView style={styles.scrollview}>
-        <TouchableOpacity style={styles.test} onPress={() => modalVisible()}>
+        <TouchableOpacity
+          style={styles.test}
+          onPress={() =>
+            navigation.navigate("ServerJoin", {
+              name: "Test",
+              password: "1234",
+            })
+          }
+        >
+          <Text style={styles.buttonText}>테스트 버튼</Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.test} onPress={() => modalVisible()}>
           <Text style={styles.buttonText}>테스트 버튼</Text>
           <ServerJoin
             isModalVisible={isModalVisible}
             modalVisible={modalVisible}
             name={"1234"}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
       <View style={styles.unnderScroll}>
         <TouchableOpacity
@@ -68,9 +96,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   scrollview: {
-    width: "100%",
+    width: "90%",
     marginTop: 20,
     borderWidth: 1,
+    alignContent: "center",
   },
   unnderScroll: {
     width: "90%",
@@ -96,5 +125,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     backgroundColor: "red",
+    // alignContent: "center",
+    // justifyContent: "center",
   },
 });

@@ -10,6 +10,8 @@ import {
   Alert,
   TouchableOpacity,
   ToastAndroid,
+  Pressable,
+  Keyboard,
 } from "react-native";
 import data from "../profileImg.json";
 import ChoiceImage from "../components/ChoiceImage";
@@ -21,7 +23,7 @@ export default function Register({ navigation, route }) {
     const image_idx = -1;
   }, []);
 
-  const [text, setText] = React.useState("사용자명을 입력해주세요");
+  const [text, setText] = useState("사용자명을 입력해주세요");
   const [isImage, setISImageState] = useState(false);
   const [imageUri, setUri] = useState([]);
   const [image_idx, setImage_idx] = useState(-1);
@@ -69,33 +71,35 @@ export default function Register({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MainTitle text={"사용자 등록"} />
-      <View
-        style={styles.innerContainer}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <Text style={styles.titleText}>사용자명</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={setText}
-          value={text}
-          clearTextOnFocus={true}
-          onFocus={() => setText("")}
+      <Pressable onPress={() => Keyboard.dismiss()} style={styles.test}>
+        <MainTitle text={"사용자 등록"} />
+        <View
+          style={styles.innerContainer}
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
+          <Text style={styles.titleText}>사용자명</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => setText(text.replace(/\s/g, ""))}
+            value={text}
+            clearTextOnFocus={true}
+            onFocus={() => setText("")}
+          />
+          <Text style={styles.titleText}>프로필 이미지</Text>
+        </View>
+        <ChoiceImage
+          content={data.image}
+          key={data.image.idx}
+          touchFunction={(value, number) => touchFunction(value, number)}
         />
-        <Text style={styles.titleText}>프로필 이미지</Text>
-      </View>
-      <ChoiceImage
-        content={data.image}
-        key={data.image.idx}
-        touchFunction={(value, number) => touchFunction(value, number)}
-      />
-      <TouchableOpacity
-        style={styles.okButton}
-        activeOpacity={0.5}
-        onPress={() => okFunction()}
-      >
-        <Text style={styles.okText}>사용자 등록</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.okButton}
+          activeOpacity={0.5}
+          onPress={() => okFunction()}
+        >
+          <Text style={styles.okText}>사용자 등록</Text>
+        </TouchableOpacity>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -106,6 +110,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  test: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
   },
   innerContainer: {
     width: "90%",

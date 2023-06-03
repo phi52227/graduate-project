@@ -6,6 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ToastAndroid,
+  Pressable,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import Modal from "react-native-modal";
 
@@ -15,31 +18,27 @@ import { TextInput } from "react-native-gesture-handler";
 export default function ServerChoice(props, { navigation }) {
   const myContext = useContext(Appcontext);
   const [text, setText] = React.useState("비밀번호");
+  const [passwordWrong, setWrong] = React.useState("");
+
+  const checkPW = (pw) => {
+    props.password == pw
+      ? console.log("확인")
+      : setWrong("비밀번호가 틀렸습니다");
+  };
 
   return (
-    <Modal
-      animationType={"slide"}
-      transparent={true}
-      visible={props.isModalVisible}
-    >
-      <View style={styles.topContainer}>
+    <SafeAreaView>
+      <Modal
+        animationType={"fade"}
+        transparent={true}
+        visible={props.isModalVisible}
+      >
         <TouchableOpacity
-          style={styles.touchOutside}
-          onPress={() => {
-            props.modalVisible();
-          }}
+          onPress={() => props.modalVisible()}
           activeOpacity={1}
+          style={styles.modalOverlay}
         />
-      </View>
-      <View style={styles.middleContainer}>
-        <View style={styles.middleSideContainer}>
-          <TouchableOpacity
-            style={styles.touchOutside}
-            onPress={() => props.modalVisible()}
-          />
-        </View>
 
-        {/* 여기 내용이 들어간다 */}
         <View style={styles.modalContainer}>
           <View style={styles.textView}>
             <Text style={styles.serverText}>{props.name + " 서버"}</Text>
@@ -48,93 +47,52 @@ export default function ServerChoice(props, { navigation }) {
             </Text>
           </View>
           <View style={styles.passwordView}>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={setText}
-              value={text}
-              clearTextOnFocus={true}
-              onFocus={() => setText("")}
-            />
+            <View>
+              <TextInput
+                style={styles.textInput}
+                onChangeText={setText}
+                value={text}
+                clearTextOnFocus={true}
+                onFocus={() => {
+                  setText("");
+                  setWrong("");
+                }}
+              />
+              <Text style={styles.worngText}>{passwordWrong}</Text>
+            </View>
             <View style={styles.buttonView}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => props.modalVisible()}
-                activeOpacity={1}
               >
                 <Text style={styles.buttonText}>취소</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => saveFunction()}
-                activeOpacity={1}
+                onPress={() => checkPW(text)}
               >
                 <Text style={styles.buttonText}>서버 참가</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-        {/* 여기까지 */}
-
-        <View style={styles.middleSideContainer}>
-          <TouchableOpacity
-            style={styles.touchOutside}
-            onPress={() => props.modalVisible()}
-          />
-        </View>
-      </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity
-          style={styles.touchOutside}
-          onPress={() => props.modalVisible()}
-        />
-      </View>
-    </Modal>
+      </Modal>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  topContainer: {
-    width: "100%",
-    flex: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  middleContainer: {
-    width: "100%",
-    flex: 60,
-    flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  bottomContainer: {
-    width: "100%",
-    flex: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  middleSideContainer: {
-    flex: 5,
-  },
-
   modalContainer: {
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-    justifyContent: "flex-start",
-    flex: 95,
+    justifyContent: "flex-end",
     backgroundColor: "#f2f2f2",
     borderWidth: 2,
-  },
-  touchOutside: {
-    width: "100%",
-    height: "100%",
+    flex: 1,
+    marginHorizontal: "10%",
+    marginVertical: "30%",
   },
   buttonView: {
     width: "90%",
-    height: 70,
+    height: 55,
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
@@ -167,7 +125,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flexWrap: "wrap",
     color: "#424242",
-
     marginBottom: 20,
   },
   textView: {
@@ -189,5 +146,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     alignSelf: "center",
+  },
+  worngText: {
+    fontSize: 15,
+    fontWeight: "500",
+    textAlign: "center",
+    flexWrap: "wrap",
+    color: "red",
+  },
+  modalOverlay: {
+    position: "absolute",
+    top: Platform.OS === "android" ? "-10%" : 0,
+    bottom: "-10%",
+    left: "-10%",
+    right: "-10%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    flex: 1,
   },
 });

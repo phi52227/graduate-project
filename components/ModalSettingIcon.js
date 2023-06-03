@@ -37,106 +37,57 @@ export default function ModalsettingIcon(props) {
 
   return (
     <Modal
-      animationType={"slide"}
+      animationType={"fade"}
       transparent={true}
       visible={props.isModalVisible}
     >
-      <View style={styles.topContainer}>
-        <TouchableOpacity
-          style={styles.touchOutside}
-          onPress={() => {
-            props.modalVisible();
-          }}
-          activeOpacity={1}
+      <TouchableOpacity
+        onPress={() => props.modalVisible()}
+        activeOpacity={1}
+        style={styles.modalOverlay}
+      />
+      <View style={styles.modalContainer}>
+        <ChangeImage
+          content={data.image}
+          touchFunction={(value, number) => touchFunction(value, number)}
+          myContext={myContext}
         />
-      </View>
-      <View style={styles.middleContainer}>
-        <View style={styles.middleSideContainer}>
+        <View style={styles.buttonView}>
           <TouchableOpacity
-            style={styles.touchOutside}
+            style={styles.button}
             onPress={() => props.modalVisible()}
-          />
-        </View>
-        <View style={styles.modalContainer}>
-          <ChangeImage
-            content={data.image}
-            touchFunction={(value, number) => touchFunction(value, number)}
-            myContext={myContext}
-          />
-          <View style={styles.buttonView}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => props.modalVisible()}
-              activeOpacity={1}
-            >
-              <Text style={styles.buttonText}>취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => saveFunction()}
-              activeOpacity={1}
-            >
-              <Text style={styles.buttonText}>저장</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.middleSideContainer}>
+          >
+            <Text style={styles.buttonText}>취소</Text>
+          </TouchableOpacity>
           <TouchableOpacity
-            style={styles.touchOutside}
-            onPress={() => props.modalVisible()}
-          />
+            style={styles.button}
+            onPress={() => saveFunction()}
+          >
+            <Text style={styles.buttonText}>저장</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity
-          style={styles.touchOutside}
-          onPress={() => props.modalVisible()}
-        />
       </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
+  modalOverlay: {
+    position: "absolute",
+    top: Platform.OS === "android" ? "-10%" : 0,
+    bottom: "-10%",
+    left: "-10%",
+    right: "-10%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    flex: 1,
   },
-  topContainer: {
-    width: "100%",
-    flex: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  middleContainer: {
-    width: "100%",
-    flex: 80,
-    flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  bottomContainer: {
-    width: "100%",
-    flex: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  middleSideContainer: {
-    flex: 5,
-  },
-
   modalContainer: {
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
+    flex: 1,
     justifyContent: "center",
-    flex: 95,
-    backgroundColor: "#e6e6e6",
+    backgroundColor: "#f2f2f2",
     borderWidth: 2,
-  },
-  touchOutside: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: "(0, 0, 0, 0.5)",
+    marginHorizontal: "5%",
+    marginVertical: "20%",
   },
   buttonView: {
     width: "90%",
