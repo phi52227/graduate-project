@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Pressable,
   Keyboard,
+  BackHandler,
 } from "react-native";
 import data from "../profileImg.json";
 import ChoiceImage from "../components/ChoiceImage";
@@ -20,9 +21,25 @@ import MainTitle from "../components/MainTitle";
 
 export default function Register({ navigation, route }) {
   useEffect(() => {
-    const image_idx = -1;
-  }, []);
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   const [text, setText] = useState("사용자명을 입력해주세요");
   const [isImage, setISImageState] = useState(false);
   const [imageUri, setUri] = useState([]);

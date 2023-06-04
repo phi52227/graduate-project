@@ -9,19 +9,37 @@ import {
   Platform,
   Keyboard,
   Pressable,
-  Alert,
   BackHandler,
+  Alert,
 } from "react-native";
 
 import Appcontext from "../components/AppContext";
-import {
-  TextInput,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import { TextInput } from "react-native-gesture-handler";
 import MainTitle from "../components/MainTitle";
 import Profile from "../components/Profile";
 
 export default function ServerJoin({ navigation, route }) {
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const myContext = useContext(Appcontext);
   const [text, setText] = useState("비밀번호");
   const [passwordWrong, setWrong] = useState("");
@@ -62,7 +80,10 @@ export default function ServerJoin({ navigation, route }) {
             <View style={styles.buttonView}>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.goBack()}
+                onPress={() => {
+                  navigation.goBack();
+                  backHandler.remove;
+                }}
               >
                 <Text style={styles.buttonText}>취소</Text>
               </TouchableOpacity>
