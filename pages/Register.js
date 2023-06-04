@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -18,28 +18,9 @@ import data from "../profileImg.json";
 import ChoiceImage from "../components/ChoiceImage";
 import Appcontext from "../components/AppContext";
 import MainTitle from "../components/MainTitle";
+import DoubleTapToClose from "../components/DoubleTapToClose";
 
 export default function Register({ navigation, route }) {
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "YES", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
   const [text, setText] = useState("사용자명을 입력해주세요");
   const [isImage, setISImageState] = useState(false);
   const [imageUri, setUri] = useState([]);
@@ -88,8 +69,9 @@ export default function Register({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <DoubleTapToClose navigation={navigation} />
       <Pressable onPress={() => Keyboard.dismiss()} style={styles.test}>
-        <MainTitle text={"사용자 등록"} />
+        <MainTitle text={"사용자 등록"} navigation={navigation} />
         <View
           style={styles.innerContainer}
           contentContainerStyle={{ flexGrow: 1 }}

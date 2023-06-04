@@ -12,6 +12,7 @@ import {
   Platform,
   Appearance,
 } from "react-native";
+import DoubleTapToClose from "../components/DoubleTapToClose";
 
 const width = Dimensions.get("window").width;
 const theme = Appearance.getColorScheme();
@@ -19,6 +20,7 @@ const theme = Appearance.getColorScheme();
 export default function IntroPage({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
+      <DoubleTapToClose navigation={navigation} />
       <StatusBar
         backgroundColor={theme === "light" ? "#fff" : "#000"}
         barStyle={theme === "light" ? "dark-content" : "light-content"}

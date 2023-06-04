@@ -16,31 +16,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import Appcontext from "../components/AppContext";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
-import AppContext from "../components/AppContext";
+import DoubleTapToClose from "../components/DoubleTapToClose";
 
 const dev_width = Dimensions.get("window").width;
 
 export default function ServerChoice({ navigation, route }) {
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "YES", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const modalVisible = () => {
@@ -49,28 +29,32 @@ export default function ServerChoice({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MainTitle text={"서버 선택 화면"} />
+      <DoubleTapToClose navigation={navigation} />
+      <MainTitle text={"서버 선택 화면"} navigation={navigation} />
       <Profile />
       <ScrollView style={styles.scrollview}>
         <TouchableOpacity
           style={styles.test}
           onPress={() =>
             navigation.navigate("ServerJoin", {
-              name: "Test",
+              name: "Test1",
               password: "1234",
             })
           }
         >
           <Text style={styles.buttonText}>테스트 버튼</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.test} onPress={() => modalVisible()}>
+        <TouchableOpacity
+          style={styles.test}
+          onPress={() =>
+            navigation.navigate("ServerJoin", {
+              name: "Test2",
+              password: "1234",
+            })
+          }
+        >
           <Text style={styles.buttonText}>테스트 버튼</Text>
-          <ServerJoin
-            isModalVisible={isModalVisible}
-            modalVisible={modalVisible}
-            name={"1234"}
-          />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </ScrollView>
       <View style={styles.unnderScroll}>
         <TouchableOpacity

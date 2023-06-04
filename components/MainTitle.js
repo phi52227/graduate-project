@@ -1,20 +1,16 @@
-import { useNavigationState } from "@react-navigation/native";
 import { StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 export default function MainTitle({ text, navigation }) {
-  //내비게이션 스택의 수
-  const routesLength = useNavigationState((state) => state.routes.length);
-
   const backBtn = () => {
     // 네비게이션 스택이 있다면 뒤로 가기 버튼을 출력
-    const backtext = "< Back";
-    if (routesLength > 1) {
+    const backText = "< Back";
+    if (navigation.canGoBack()) {
       return (
         <TouchableOpacity
           style={styles.touchBack}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.backText}>{backtext}</Text>
+          <Text style={styles.backText}>{backText}</Text>
         </TouchableOpacity>
       );
     }

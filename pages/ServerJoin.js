@@ -17,29 +17,9 @@ import Appcontext from "../components/AppContext";
 import { TextInput } from "react-native-gesture-handler";
 import MainTitle from "../components/MainTitle";
 import Profile from "../components/Profile";
+import DoubleTapToClose from "../components/DoubleTapToClose";
 
 export default function ServerJoin({ navigation, route }) {
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "YES", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
-
   const myContext = useContext(Appcontext);
   const [text, setText] = useState("비밀번호");
   const [passwordWrong, setWrong] = useState("");
@@ -53,9 +33,10 @@ export default function ServerJoin({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <DoubleTapToClose navigation={navigation} />
+      <MainTitle text={"서버 참가"} navigation={navigation} />
+      <Profile />
       <Pressable onPress={() => Keyboard.dismiss()} style={styles.test}>
-        <MainTitle text={"서버 참가"} navigation={navigation} />
-        <Profile />
         <View style={styles.modalContainer}>
           <View style={styles.textView}>
             <Text style={styles.serverText}>{name + " 서버"}</Text>
@@ -82,7 +63,6 @@ export default function ServerJoin({ navigation, route }) {
                 style={styles.button}
                 onPress={() => {
                   navigation.goBack();
-                  backHandler.remove;
                 }}
               >
                 <Text style={styles.buttonText}>취소</Text>
@@ -110,12 +90,14 @@ const styles = StyleSheet.create({
   },
   test: {
     width: "100%",
-    height: "100%",
+    flex: 1,
+    justifyContent: "center",
   },
   modalContainer: {
     justifyContent: "flex-start",
     borderWidth: 2,
-    flex: 1,
+    width: "80%",
+    aspectRatio: 1 / 1.5,
     marginHorizontal: "10%",
     marginVertical: "10%",
     alignItems: "center",
