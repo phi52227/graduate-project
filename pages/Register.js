@@ -12,13 +12,16 @@ import {
   ToastAndroid,
   Pressable,
   Keyboard,
-  BackHandler,
 } from "react-native";
 import data from "../profileImg.json";
 import ChoiceImage from "../components/ChoiceImage";
 import Appcontext from "../components/AppContext";
 import MainTitle from "../components/MainTitle";
 import DoubleTapToClose from "../components/DoubleTapToClose";
+import { firebase_db } from "../firebaseConfig";
+import * as Application from "expo-application";
+
+const isIOS = Platform.OS === "ios";
 
 export default function Register({ navigation, route }) {
   const [text, setText] = useState("사용자명을 입력해주세요");
@@ -48,13 +51,28 @@ export default function Register({ navigation, route }) {
    * 데이터베이스에 사용자 정보를 저장하는 역할을 하는 함수 넣기
    * 동시에 서버 선택화면으로 이동, navigation stack reset.
    */
-  function register(text, uri) {
+  const register = async (text, uri) => {
     //인수를 데이터베이스에 저장하고 페이지 전환하기
-    console.log(text, uri);
     myContext.setUserState(text, uri);
     myContext.setIdx(image_idx);
+
+    let userUniqueId;
+    if (isIOS) {
+      let iosId = await Application.getIosIdForVendorAsync();
+      userUniqueId = iosId;
+    } else {
+      userUniqueId = await Application.androidId;
+    }
+    const user = { name: text, profileImg: uri };
+    console.log("🚀 ~ file: Register.js:68 ~ register ~ user:", user);
+    firebase_db
+      .ref("/project_hi/user/" + userUniqueId)
+      .set(user, function (error) {
+        console.log("🚀 ~ file: Register.js:70 ~ error:", error);
+        if (error) console.log("등록 실패");
+      });
     navigation.reset({ routes: [{ name: "ServerChoice" }] });
-  }
+  };
 
   function okFunction() {
     // 함수 구현

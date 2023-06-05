@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Alert,
-  Dimensions,
   TouchableOpacity,
   ImageBackground,
   StatusBar,
@@ -13,11 +11,61 @@ import {
   Appearance,
 } from "react-native";
 import DoubleTapToClose from "../components/DoubleTapToClose";
+import { firebase_db } from "../firebaseConfig";
+import * as Application from "expo-application";
+import Appcontext from "../components/AppContext";
 
-const width = Dimensions.get("window").width;
+const isIOS = Platform.OS === "ios";
 const theme = Appearance.getColorScheme();
 
 export default function IntroPage({ navigation, route }) {
+  let userUniqueId;
+  const myContext = useContext(Appcontext);
+  const [isId, setIsId] = useState(false);
+
+  useEffect(() => {
+    checkIsID();
+  }, []);
+
+  const checkIsID = async () => {
+    if (isIOS) {
+      let iosId = await Application.getIosIdForVendorAsync();
+      userUniqueId = iosId;
+    } else {
+      userUniqueId = await Application.androidId;
+    }
+
+    try {
+      firebase_db
+        .ref("/project_hi/user/" + userUniqueId)
+        .once("value")
+        .then((snapshot) => {
+          let userInfo = snapshot.val();
+          console.log(
+            "🚀 ~ file: IntroPage.js:29 ~ .then ~ userInfo:",
+            userInfo
+          );
+          if (userInfo) setIsId(true);
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const start = () => {
+    try {
+      myContext.setDevice(userUniqueId);
+      console.log("succes");
+    } catch (err) {
+      console.log(err);
+    }
+    if (isId) {
+      navigation.reset({ routes: [{ name: "ServerChoice" }] });
+    } else {
+      navigation.reset({ routes: [{ name: "Register" }] });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <DoubleTapToClose navigation={navigation} />
@@ -34,7 +82,7 @@ export default function IntroPage({ navigation, route }) {
         <TouchableOpacity
           style={styles.touchToStart}
           activeOpacity={1}
-          onPress={() => navigation.reset({ routes: [{ name: "Register" }] })}
+          onPress={() => start()}
         >
           <View style={styles.titleview}>
             <Text style={styles.title}>TITLE</Text>
@@ -47,7 +95,6 @@ export default function IntroPage({ navigation, route }) {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     //앱의 배경 색
@@ -76,7 +123,7 @@ const styles = StyleSheet.create({
   touchToStart: {
     backgroundColor: "(0,0,0,0.5)",
     height: "100%",
-    width: width,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -3,9 +3,13 @@ import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import Appcontext from "./AppContext";
 import ModalsettingIcon from "./ModalSettingIcon";
 
+//myContext로 불러오는 부분 다 firebase에서 가져오도록 수정 예정
+
 export default function Profile({ navigation, route }) {
   const myContext = useContext(Appcontext);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [userImg, setUserImg] = useState([]);
+  const [userName, setUserName] = useState([]);
 
   const modalVisible = () => {
     setIsModalVisible(!isModalVisible);

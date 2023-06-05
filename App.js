@@ -10,28 +10,19 @@ import AppContext from "./components/AppContext";
 export default function App() {
   // console.disableYellowBox = true;
   console.disableYellowBox = true;
+  const [device, setDeviceName] = useState([]);
 
-  const [userName, setUserName] = useState([]);
-  const [userImage, setUserImage] = useState([]);
-  const [userImageIdx, setUserImageIdx] = useState([]);
-  const setUserState = (name, image) => {
-    setUserName(name);
-    setUserImage(image);
-  };
-  const setIdx = (idx) => {
-    setUserImageIdx(idx);
+  const setDevice = (device) => {
+    setDeviceName(device);
   };
 
-  const userSettinsg = {
-    userSettingName: userName,
-    userSettingImage: userImage,
-    userSettingImageIdx: userImageIdx,
-    setUserState,
-    setIdx,
+  const userSettings = {
+    userDevice: device,
+    setDevice,
   };
 
   return (
-    <AppContext.Provider value={userSettinsg}>
+    <AppContext.Provider value={userSettings}>
       <NavigationContainer>
         <StatusBar style="black" />
         <StackNavigator />

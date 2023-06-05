@@ -7,26 +7,26 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
-  Image,
-  Dimensions,
-  Alert,
-  BackHandler,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Appcontext from "../components/AppContext";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
 import DoubleTapToClose from "../components/DoubleTapToClose";
-
-const dev_width = Dimensions.get("window").width;
+import Appcontext from "../components/AppContext";
 
 export default function ServerChoice({ navigation, route }) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const myContext = useContext(Appcontext);
+  let device;
+  useEffect(() => {
+    device = myContext.userDevice;
+  });
 
-  const modalVisible = () => {
-    setIsModalVisible(!isModalVisible);
+  const logdd = () => {
+    console.log(
+      "🚀 ~ file: ServerChoice.js:23 ~ useEffect ~ userDevice:",
+      device
+    );
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <DoubleTapToClose navigation={navigation} />
@@ -35,12 +35,13 @@ export default function ServerChoice({ navigation, route }) {
       <ScrollView style={styles.scrollview}>
         <TouchableOpacity
           style={styles.test}
-          onPress={() =>
+          onPress={() => {
             navigation.navigate("ServerJoin", {
               name: "Test1",
               password: "1234",
-            })
-          }
+            });
+            logdd();
+          }}
         >
           <Text style={styles.buttonText}>테스트 버튼</Text>
         </TouchableOpacity>
