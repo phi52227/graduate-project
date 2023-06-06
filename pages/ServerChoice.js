@@ -11,68 +11,23 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
+import ServerList from "../components/ServerList";
 import DoubleTapToClose from "../components/DoubleTapToClose";
 import { firebase_db } from "../firebaseConfig";
 
 export default function ServerChoice({ navigation, route }) {
   const [serverList, setServerList] = useState([]);
 
-  useEffect(() => {
-    console.log(
-      "🚀 ~ file: ServerChoice.js:19 ~ ServerChoice ~ serverList:",
-      serverList
-    );
-    refreshServer();
-  }, []);
-
-  const refreshServer = () => {
-    getServer().then(setServerList);
-  };
-
-  const getServer = () =>
-    new Promise((resolve, reject) => {
-      try {
-        firebase_db
-          .ref("/project_hi/server/")
-          .once("value")
-          .then((snapshot) => {
-            let serverList = snapshot.val();
-            resolve(serverList);
-          });
-      } catch (err) {
-        console.error(err);
-      }
-    });
+  useEffect(() => {}, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <DoubleTapToClose navigation={navigation} />
       <MainTitle text={"서버 선택 화면"} navigation={navigation} />
       <Profile />
-      <ScrollView style={styles.scrollview}>
-        <TouchableOpacity
-          style={styles.test}
-          onPress={() => {
-            navigation.navigate("ServerJoin", {
-              name: "Test1",
-              password: "1234",
-            });
-          }}
-        >
-          <Text style={styles.buttonText}>테스트 버튼</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.test}
-          onPress={() =>
-            navigation.navigate("ServerJoin", {
-              name: "Test2",
-              password: "1234",
-            })
-          }
-        >
-          <Text style={styles.buttonText}>테스트 버튼</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      <View style={styles.scrollview}>
+        <ServerList navigation={navigation} />
+      </View>
       <View style={styles.unnderScroll}>
         <TouchableOpacity
           style={styles.button}
@@ -98,8 +53,9 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     width: "90%",
+    flex: 1,
     marginTop: 20,
-    borderWidth: 1,
+    borderWidth: 2,
     alignContent: "center",
   },
   unnderScroll: {
@@ -121,12 +77,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "500",
     textAlign: "center",
-  },
-  test: {
-    width: 100,
-    height: 100,
-    backgroundColor: "red",
-    // alignContent: "center",
-    // justifyContent: "center",
   },
 });

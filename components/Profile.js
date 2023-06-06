@@ -11,7 +11,7 @@ const isIOS = Platform.OS === "ios";
 export default function Profile({ navigation, route }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [userImg, setUserImg] = useState(
-    "https://cdn.pixabay.com/photo/2015/12/04/22/23/gear-1077563_1280.png"
+    "https://firebasestorage.googleapis.com/v0/b/project-hi-60da4.appspot.com/o/images%2Fwhite.png?alt=media&token=7d8db406-30d2-4332-9db6-c01bd65c1a32&_gl=1*1cbag1p*_ga*MTMxODcyMjYyNC4xNjgyNjY0NzY4*_ga_CW55HF8NVT*MTY4NjA4MjAyMy4xNy4xLjE2ODYwODIwNzguMC4wLjA."
   );
   const [userName, setUserName] = useState([]);
 

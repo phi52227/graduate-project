@@ -1,6 +1,5 @@
-import { StyleSheet, View, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-export default function MainTitle({ text, navigation }) {
+import React, { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+export default function MainTitle({ navigation, text }) {
   const backBtn = () => {
     // 네비게이션 스택이 있다면 뒤로 가기 버튼을 출력
     const backText = "< Back";
