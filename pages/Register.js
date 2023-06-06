@@ -26,6 +26,33 @@ export default function Register({ navigation, route }) {
   const [isImage, setISImageState] = useState(false);
   const [imageUri, setUri] = useState([]);
   const [imageIdx, setIdx] = useState([]);
+  const [usersName, setUsersName] = useState([]);
+
+  useEffect(() => {}, []);
+
+  const compareName = (name) => {
+    if (usersName.find((value) => value == name) == undefined) return true;
+    else return false;
+  };
+
+  const getUsersName = () =>
+    new Promise((resolve, reject) => {
+      try {
+        let userNames = [];
+        firebase_db
+          .ref("/project_hi/user/")
+          .once("value")
+          .then((snapshot) => {
+            let userData = snapshot.val();
+            for (let user in userData) {
+              userNames.push(userData[user].name);
+            }
+            resolve(userNames);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
 
   /** ChoiceImage 컴포넌트에서 이미지를 터치했을 때 실행되는 함수
    * 여기에 이미지가 선택되었는지 확인하는 기능을 추가하면 될 듯.
@@ -63,7 +90,11 @@ export default function Register({ navigation, route }) {
   const register = async (text, uri, idx) => {
     //인수를 데이터베이스에 저장하고 페이지 전환하기
     getDevice().then((userUniqueId) => {
-      const user = { name: text, profileImg: uri, imageIdx: idx };
+      let user = { name: text, profileImg: uri, imageIdx: idx };
+      //user 권한 부여
+      user["authority"] = "user";
+      //참가중인 서버
+      user["joined_server"] = "";
       console.log("🚀 ~ file: Register.js:68 ~ register ~ user:", user);
       firebase_db
         .ref("/project_hi/user/" + userUniqueId)
@@ -80,6 +111,8 @@ export default function Register({ navigation, route }) {
       notifyMessage("사용자명을 입력해주세요");
     } else if (isImage == false) {
       notifyMessage("프로필 이미지를 선택해주세요");
+    } else if (compareName(text) == false) {
+      notifyMessage("사용중인 이름입니다");
     } else {
       register(text, imageUri, imageIdx);
     }
@@ -97,7 +130,10 @@ export default function Register({ navigation, route }) {
           <Text style={styles.titleText}>사용자명</Text>
           <TextInput
             style={styles.textInput}
-            onChangeText={(text) => setText(text.replace(/\s/g, ""))}
+            onChangeText={(text) => {
+              setText(text.replace(/\s/g, ""));
+              getUsersName().then(setUsersName);
+            }}
             value={text}
             clearTextOnFocus={true}
             onFocus={() => setText("")}

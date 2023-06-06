@@ -19,7 +19,7 @@ export default function ServerChoice({ navigation, route }) {
 
   useEffect(() => {
     console.log(
-      "🚀 ~ file: ServerChoice.js:22 ~ ServerChoice ~ serverList:",
+      "🚀 ~ file: ServerChoice.js:19 ~ ServerChoice ~ serverList:",
       serverList
     );
     refreshServer();
@@ -27,10 +27,6 @@ export default function ServerChoice({ navigation, route }) {
 
   const refreshServer = () => {
     getServer().then(setServerList);
-    console.log(
-      "🚀 ~ file: ServerChoice.js:30 ~ ServerChoice ~ serverList:",
-      serverList
-    );
   };
 
   const getServer = () =>

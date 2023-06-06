@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Text,
@@ -17,10 +17,13 @@ const isIOS = Platform.OS === "ios";
 export default function ModalsettingIcon(props) {
   const [changeImage, setChangeImage] = useState([]);
   const [changeImageIdx, setChangeImageIdx] = useState([]);
-  const [userName, setUserName] = useState([]);
+  const [userData, setUserData] = useState([]);
 
-  function touchFunction(name, source, idx) {
-    setUserName(name);
+  useEffect(() => {
+    getDevice().then(getUserInfo).then(setUserData);
+  }, []);
+
+  function touchFunction(source, idx) {
     setChangeImage(source);
     setChangeImageIdx(idx);
   }
@@ -36,13 +39,31 @@ export default function ModalsettingIcon(props) {
       resolve(userUniqueId);
     });
 
-  const saveFunction = (name, image, idx) => {
+  const getUserInfo = (userDevice) =>
+    new Promise((resolve, reject) => {
+      try {
+        firebase_db
+          .ref("/project_hi/user/" + userDevice)
+          .once("value")
+          .then((snapshot) => {
+            let userInfo = snapshot.val();
+            resolve(userInfo);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+  const saveFunction = (image, idx) => {
     //인수를 데이터베이스에 저장하고 페이지 전환하기
     getDevice().then((userUniqueId) => {
-      const user = { name: name, profileImg: image, imageIdx: idx };
+      let user = userData;
+      user.profileImg = image;
+      user.imageIdx = idx;
       firebase_db
         .ref("/project_hi/user/" + userUniqueId)
         .set(user, function (error) {
+          console.log("🚀 ~ file: ModalSettingIcon.js:66 ~ user:", user);
           if (error)
             console.log("🚀 ~ file: ModalSettingIcon.js:54 ~ error:", error);
         });
@@ -73,7 +94,7 @@ export default function ModalsettingIcon(props) {
       <View style={styles.modalContainer}>
         <ChangeImage
           content={data.image}
-          touchFunction={(name, value, idx) => touchFunction(name, value, idx)}
+          touchFunction={(value, idx) => touchFunction(value, idx)}
         />
         <View style={styles.buttonView}>
           <TouchableOpacity
@@ -84,7 +105,7 @@ export default function ModalsettingIcon(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => saveFunction(userName, changeImage, changeImageIdx)}
+            onPress={() => saveFunction(changeImage, changeImageIdx)}
           >
             <Text style={styles.buttonText}>저장</Text>
           </TouchableOpacity>

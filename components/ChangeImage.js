@@ -20,7 +20,6 @@ const dev_width_90 = dev_width * 0.9 - 4;
 export default function ChangeImage(props) {
   const content = data.image;
 
-  const [userName, setUserName] = useState([]);
   const [imageName, setImageName] = useState([]);
   const [selectedImageidx, setImageIdx] = useState(-1);
 
@@ -30,7 +29,6 @@ export default function ChangeImage(props) {
       .then((userInfo) => {
         setImageName(content[userInfo.imageIdx].name);
         setImageIdx(userInfo.imageIdx);
-        setUserName(userInfo.name);
       });
   }, []);
 
@@ -64,7 +62,7 @@ export default function ChangeImage(props) {
    * 지금음 선택된 이미지 Text를 변경하고 있음..
    */
   function touchImage(data) {
-    props.touchFunction(userName, data.image, data.idx);
+    props.touchFunction(data.image, data.idx);
     setImageIdx(data.idx);
     setImageName(data.name);
   }

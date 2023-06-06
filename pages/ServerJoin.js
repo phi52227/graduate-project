@@ -9,18 +9,14 @@ import {
   Platform,
   Keyboard,
   Pressable,
-  BackHandler,
-  Alert,
 } from "react-native";
 
-import Appcontext from "../components/AppContext";
 import { TextInput } from "react-native-gesture-handler";
 import MainTitle from "../components/MainTitle";
 import Profile from "../components/Profile";
 import DoubleTapToClose from "../components/DoubleTapToClose";
 
 export default function ServerJoin({ navigation, route }) {
-  const myContext = useContext(Appcontext);
   const [text, setText] = useState("비밀번호");
   const [passwordWrong, setWrong] = useState("");
 
