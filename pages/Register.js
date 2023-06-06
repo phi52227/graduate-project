@@ -15,28 +15,25 @@ import {
 } from "react-native";
 import data from "../profileImg.json";
 import ChoiceImage from "../components/ChoiceImage";
-import Appcontext from "../components/AppContext";
 import MainTitle from "../components/MainTitle";
 import DoubleTapToClose from "../components/DoubleTapToClose";
 import { firebase_db } from "../firebaseConfig";
 import * as Application from "expo-application";
-
 const isIOS = Platform.OS === "ios";
 
 export default function Register({ navigation, route }) {
   const [text, setText] = useState("사용자명을 입력해주세요");
   const [isImage, setISImageState] = useState(false);
   const [imageUri, setUri] = useState([]);
-  const [image_idx, setImage_idx] = useState(-1);
-  //context 사용하기
-  const myContext = useContext(Appcontext);
+  const [imageIdx, setIdx] = useState([]);
+
   /** ChoiceImage 컴포넌트에서 이미지를 터치했을 때 실행되는 함수
    * 여기에 이미지가 선택되었는지 확인하는 기능을 추가하면 될 듯.
    */
   function touchFunction(source, idx) {
     setISImageState(true);
     setUri(source);
-    setImage_idx(idx);
+    setIdx(idx);
   }
 
   function notifyMessage(msg) {
@@ -46,32 +43,35 @@ export default function Register({ navigation, route }) {
       Alert.alert(msg);
     }
   }
+
+  const getDevice = () =>
+    new Promise((resolve, reject) => {
+      if (isIOS) {
+        let iosId = Application.getIosIdForVendorAsync();
+        userUniqueId = iosId;
+      } else {
+        userUniqueId = Application.androidId;
+      }
+      resolve(userUniqueId);
+    });
+
   /** 사용자 등록 버튼을 눌렀을 때 작동하는 함수
    * 여기에는 사용자명을 입력하고 이미지를 선택했는지에 대한 여부를 확인하여
    * 데이터베이스에 사용자 정보를 저장하는 역할을 하는 함수 넣기
    * 동시에 서버 선택화면으로 이동, navigation stack reset.
    */
-  const register = async (text, uri) => {
+  const register = async (text, uri, idx) => {
     //인수를 데이터베이스에 저장하고 페이지 전환하기
-    myContext.setUserState(text, uri);
-    myContext.setIdx(image_idx);
-
-    let userUniqueId;
-    if (isIOS) {
-      let iosId = await Application.getIosIdForVendorAsync();
-      userUniqueId = iosId;
-    } else {
-      userUniqueId = await Application.androidId;
-    }
-    const user = { name: text, profileImg: uri };
-    console.log("🚀 ~ file: Register.js:68 ~ register ~ user:", user);
-    firebase_db
-      .ref("/project_hi/user/" + userUniqueId)
-      .set(user, function (error) {
-        console.log("🚀 ~ file: Register.js:70 ~ error:", error);
-        if (error) console.log("등록 실패");
-      });
-    navigation.reset({ routes: [{ name: "ServerChoice" }] });
+    getDevice().then((userUniqueId) => {
+      const user = { name: text, profileImg: uri, imageIdx: idx };
+      console.log("🚀 ~ file: Register.js:68 ~ register ~ user:", user);
+      firebase_db
+        .ref("/project_hi/user/" + userUniqueId)
+        .set(user, function (error) {
+          if (error) console.log("🚀 ~ file: Register.js:70 ~ error:", error);
+          navigation.reset({ routes: [{ name: "ServerChoice" }] });
+        });
+    });
   };
 
   function okFunction() {
@@ -81,7 +81,7 @@ export default function Register({ navigation, route }) {
     } else if (isImage == false) {
       notifyMessage("프로필 이미지를 선택해주세요");
     } else {
-      register(text, imageUri);
+      register(text, imageUri, imageIdx);
     }
   }
 
@@ -107,7 +107,7 @@ export default function Register({ navigation, route }) {
         <ChoiceImage
           content={data.image}
           key={data.image.idx}
-          touchFunction={(value, number) => touchFunction(value, number)}
+          touchFunction={(value, num) => touchFunction(value, num)}
         />
         <TouchableOpacity
           style={styles.okButton}

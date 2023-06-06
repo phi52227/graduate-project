@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -12,21 +12,42 @@ import { ScrollView } from "react-native-gesture-handler";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
 import DoubleTapToClose from "../components/DoubleTapToClose";
-import Appcontext from "../components/AppContext";
+import { firebase_db } from "../firebaseConfig";
 
 export default function ServerChoice({ navigation, route }) {
-  const myContext = useContext(Appcontext);
-  let device;
-  useEffect(() => {
-    device = myContext.userDevice;
-  });
+  const [serverList, setServerList] = useState([]);
 
-  const logdd = () => {
+  useEffect(() => {
     console.log(
-      "🚀 ~ file: ServerChoice.js:23 ~ useEffect ~ userDevice:",
-      device
+      "🚀 ~ file: ServerChoice.js:22 ~ ServerChoice ~ serverList:",
+      serverList
+    );
+    refreshServer();
+  }, []);
+
+  const refreshServer = () => {
+    getServer().then(setServerList);
+    console.log(
+      "🚀 ~ file: ServerChoice.js:30 ~ ServerChoice ~ serverList:",
+      serverList
     );
   };
+
+  const getServer = () =>
+    new Promise((resolve, reject) => {
+      try {
+        firebase_db
+          .ref("/project_hi/server/")
+          .once("value")
+          .then((snapshot) => {
+            let serverList = snapshot.val();
+            resolve(serverList);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
   return (
     <SafeAreaView style={styles.container}>
       <DoubleTapToClose navigation={navigation} />
@@ -40,7 +61,6 @@ export default function ServerChoice({ navigation, route }) {
               name: "Test1",
               password: "1234",
             });
-            logdd();
           }}
         >
           <Text style={styles.buttonText}>테스트 버튼</Text>

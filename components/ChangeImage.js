@@ -5,36 +5,68 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
-  Alert,
   Text,
   TouchableOpacity,
 } from "react-native";
+
+import data from "../profileImg.json";
+import { firebase_db } from "../firebaseConfig";
+import * as Application from "expo-application";
+const isIOS = Platform.OS === "ios";
 
 const dev_width = Dimensions.get("window").width * 0.8;
 const dev_width_90 = dev_width * 0.9 - 4;
 
 export default function ChangeImage(props) {
-  useEffect(() => {
-    setImageName(content[myContext.userSettingImageIdx].name);
-    setImageIdx(myContext.userSettingImageIdx);
-  }, []);
-  const content = props.content;
-  const myContext = props.myContext;
+  const content = data.image;
 
-  const [imageName, setImageName] = useState(
-    content[myContext.userSettingImageIdx].name
-  );
-  const [selectedImageidx, setImageIdx] = useState(
-    myContext.userSettingImageIdx
-  );
+  const [userName, setUserName] = useState([]);
+  const [imageName, setImageName] = useState([]);
+  const [selectedImageidx, setImageIdx] = useState(-1);
+
+  useEffect(() => {
+    getDevice()
+      .then(getUserInfo)
+      .then((userInfo) => {
+        setImageName(content[userInfo.imageIdx].name);
+        setImageIdx(userInfo.imageIdx);
+        setUserName(userInfo.name);
+      });
+  }, []);
+
+  const getDevice = () =>
+    new Promise((resolve, reject) => {
+      if (isIOS) {
+        let iosId = Application.getIosIdForVendorAsync();
+        userUniqueId = iosId;
+      } else {
+        userUniqueId = Application.androidId;
+      }
+      resolve(userUniqueId);
+    });
+
+  const getUserInfo = (userDevice) =>
+    new Promise((resolve, reject) => {
+      try {
+        firebase_db
+          .ref("/project_hi/user/" + userDevice)
+          .once("value")
+          .then((snapshot) => {
+            let userInfo = snapshot.val();
+            resolve(userInfo);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
 
   /** 이미지 클릭했을 때 동작하는 함수
    * 지금음 선택된 이미지 Text를 변경하고 있음..
    */
   function touchImage(data) {
+    props.touchFunction(userName, data.image, data.idx);
     setImageIdx(data.idx);
     setImageName(data.name);
-    props.touchFunction(data.image, data.idx);
   }
 
   function popImage(data) {

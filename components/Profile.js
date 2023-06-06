@@ -1,28 +1,68 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import Appcontext from "./AppContext";
 import ModalsettingIcon from "./ModalSettingIcon";
+import { firebase_db } from "../firebaseConfig";
+import * as Application from "expo-application";
 
+const isIOS = Platform.OS === "ios";
 //myContext로 불러오는 부분 다 firebase에서 가져오도록 수정 예정
 
 export default function Profile({ navigation, route }) {
-  const myContext = useContext(Appcontext);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [userImg, setUserImg] = useState([]);
+  const [userImg, setUserImg] = useState(
+    "https://cdn.pixabay.com/photo/2015/12/04/22/23/gear-1077563_1280.png"
+  );
   const [userName, setUserName] = useState([]);
+
+  useEffect(() => {
+    getDevice()
+      .then(getUserInfo)
+      .then((userInfo) => {
+        setUserImg(userInfo.profileImg);
+        setUserName(userInfo.name);
+      });
+  }, []);
+
+  const getDevice = () =>
+    new Promise((resolve, reject) => {
+      if (isIOS) {
+        let iosId = Application.getIosIdForVendorAsync();
+        userUniqueId = iosId;
+      } else {
+        userUniqueId = Application.androidId;
+      }
+      resolve(userUniqueId);
+    });
+
+  const getUserInfo = (userDevice) =>
+    new Promise((resolve, reject) => {
+      try {
+        firebase_db
+          .ref("/project_hi/user/" + userDevice)
+          .once("value")
+          .then((snapshot) => {
+            let userInfo = snapshot.val();
+            resolve(userInfo);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
 
   const modalVisible = () => {
     setIsModalVisible(!isModalVisible);
   };
 
+  const refresh = (image) => {
+    setUserImg(image);
+  };
+
   return (
     <View style={styles.profileView}>
       <View style={styles.profileViewLeft}>
-        <Image
-          style={styles.profileImage}
-          source={{ uri: myContext.userSettingImage }}
-        />
-        <Text style={styles.profileName}>{myContext.userSettingName}</Text>
+        <Image style={styles.profileImg} source={{ uri: userImg }} />
+        <Text style={styles.profileName}>{userName}</Text>
       </View>
       <View style={styles.profileViewRight}>
         <TouchableOpacity
@@ -38,6 +78,7 @@ export default function Profile({ navigation, route }) {
           <ModalsettingIcon
             isModalVisible={isModalVisible}
             modalVisible={modalVisible}
+            refresh={(image) => refresh(image)}
           />
         </TouchableOpacity>
       </View>
@@ -66,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 3,
     justifyContent: "center",
   },
-  profileImage: {
+  profileImg: {
     width: 30,
     height: 30,
     borderRadius: 15,

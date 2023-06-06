@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,52 +13,54 @@ import {
 import DoubleTapToClose from "../components/DoubleTapToClose";
 import { firebase_db } from "../firebaseConfig";
 import * as Application from "expo-application";
-import Appcontext from "../components/AppContext";
 
 const isIOS = Platform.OS === "ios";
 const theme = Appearance.getColorScheme();
 
 export default function IntroPage({ navigation, route }) {
-  let userUniqueId;
-  const myContext = useContext(Appcontext);
   const [isId, setIsId] = useState(false);
 
   useEffect(() => {
-    checkIsID();
+    getDevice().then(checkIsInfo).then(checkIsID);
   }, []);
 
-  const checkIsID = async () => {
-    if (isIOS) {
-      let iosId = await Application.getIosIdForVendorAsync();
-      userUniqueId = iosId;
-    } else {
-      userUniqueId = await Application.androidId;
-    }
+  const getDevice = () =>
+    new Promise((resolve, reject) => {
+      if (isIOS) {
+        let iosId = Application.getIosIdForVendorAsync();
+        userUniqueId = iosId;
+      } else {
+        userUniqueId = Application.androidId;
+      }
+      resolve(userUniqueId);
+    });
 
-    try {
-      firebase_db
-        .ref("/project_hi/user/" + userUniqueId)
-        .once("value")
-        .then((snapshot) => {
-          let userInfo = snapshot.val();
-          console.log(
-            "🚀 ~ file: IntroPage.js:29 ~ .then ~ userInfo:",
-            userInfo
-          );
-          if (userInfo) setIsId(true);
-        });
-    } catch (err) {
-      console.error(err);
-    }
+  const checkIsInfo = (userDevice) =>
+    new Promise((resolve, reject) => {
+      console.log(
+        "🚀 ~ file: IntroPage.js:72 ~ newPromise ~ userDevice:",
+        userDevice
+      );
+      try {
+        firebase_db
+          .ref("/project_hi/user/" + userDevice)
+          .once("value")
+          .then((snapshot) => {
+            let userInfo = snapshot.val();
+            resolve(userInfo);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+  const checkIsID = (userInfo) => {
+    console.log("🚀 ~ file: IntroPage.js:30 ~ checkIsID ~ userInfo:", userInfo);
+    if (userInfo) setIsId(true);
   };
 
   const start = () => {
-    try {
-      myContext.setDevice(userUniqueId);
-      console.log("succes");
-    } catch (err) {
-      console.log(err);
-    }
+    console.log("🚀 ~ file: IntroPage.js:69 ~ start ~ isId:", isId);
     if (isId) {
       navigation.reset({ routes: [{ name: "ServerChoice" }] });
     } else {

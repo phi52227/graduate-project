@@ -23,11 +23,11 @@ export default function ChoiceImage(props) {
    * 지금음 선택된 이미지 Text를 변경하고 있음..
    */
   function touchImage(data) {
+    props.touchFunction(data.image, data.idx);
     if (choiceImageText == "프로필 이미지를 선택해주세요")
       setText("선택된 이미지 : ");
     setImageIdx(data.idx);
     setImageState(data.name);
-    props.touchFunction(data.image, data.idx);
   }
 
   function popImage(data) {

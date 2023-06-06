@@ -10,30 +10,54 @@ import {
 import Modal from "react-native-modal";
 import ChangeImage from "./ChangeImage";
 import data from "../profileImg.json";
-
-import Appcontext from "./AppContext";
+import { firebase_db } from "../firebaseConfig";
+import * as Application from "expo-application";
+const isIOS = Platform.OS === "ios";
 
 export default function ModalsettingIcon(props) {
-  const myContext = useContext(Appcontext);
-
   const [changeImage, setChangeImage] = useState([]);
-  const [changeIdx, setChangeIdx] = useState([]);
+  const [changeImageIdx, setChangeImageIdx] = useState([]);
+  const [userName, setUserName] = useState([]);
 
-  function touchFunction(source, idx) {
+  function touchFunction(name, source, idx) {
+    setUserName(name);
     setChangeImage(source);
-    setChangeIdx(idx);
+    setChangeImageIdx(idx);
   }
 
-  function saveFunction() {
-    myContext.setUserState(myContext.userSettingName, changeImage);
-    myContext.setIdx(changeIdx);
-    props.modalVisible();
-    if (Platform.OS === "android") {
-      ToastAndroid.show("프로필 이미지가 변경되었습니다.", ToastAndroid.SHORT);
-    } else {
-      Alert.alert("프로필 이미지가 변경되었습니다.");
-    }
-  }
+  const getDevice = () =>
+    new Promise((resolve, reject) => {
+      if (isIOS) {
+        let iosId = Application.getIosIdForVendorAsync();
+        userUniqueId = iosId;
+      } else {
+        userUniqueId = Application.androidId;
+      }
+      resolve(userUniqueId);
+    });
+
+  const saveFunction = (name, image, idx) => {
+    //인수를 데이터베이스에 저장하고 페이지 전환하기
+    getDevice().then((userUniqueId) => {
+      const user = { name: name, profileImg: image, imageIdx: idx };
+      firebase_db
+        .ref("/project_hi/user/" + userUniqueId)
+        .set(user, function (error) {
+          if (error)
+            console.log("🚀 ~ file: ModalSettingIcon.js:54 ~ error:", error);
+        });
+      props.modalVisible();
+      if (Platform.OS === "android") {
+        ToastAndroid.show(
+          "프로필 이미지가 변경되었습니다.",
+          ToastAndroid.SHORT
+        );
+      } else {
+        Alert.alert("프로필 이미지가 변경되었습니다.");
+      }
+      props.refresh(changeImage);
+    });
+  };
 
   return (
     <Modal
@@ -49,8 +73,7 @@ export default function ModalsettingIcon(props) {
       <View style={styles.modalContainer}>
         <ChangeImage
           content={data.image}
-          touchFunction={(value, number) => touchFunction(value, number)}
-          myContext={myContext}
+          touchFunction={(name, value, idx) => touchFunction(name, value, idx)}
         />
         <View style={styles.buttonView}>
           <TouchableOpacity
@@ -61,7 +84,7 @@ export default function ModalsettingIcon(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => saveFunction()}
+            onPress={() => saveFunction(userName, changeImage, changeImageIdx)}
           >
             <Text style={styles.buttonText}>저장</Text>
           </TouchableOpacity>
