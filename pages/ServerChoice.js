@@ -8,16 +8,12 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
 import ServerList from "../components/ServerList";
 import DoubleTapToClose from "../components/DoubleTapToClose";
-import { firebase_db } from "../firebaseConfig";
 
 export default function ServerChoice({ navigation, route }) {
-  const [serverList, setServerList] = useState([]);
-
   useEffect(() => {}, []);
 
   return (

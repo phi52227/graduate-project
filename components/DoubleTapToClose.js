@@ -9,7 +9,10 @@ export const ExcuteOnlyOnAndroid = (props) => {
     if (backPressCount === 0) {
       setBackPressCount((prevCount) => prevCount + 1);
       setTimeout(() => setBackPressCount(0), 2000);
-      ToastAndroid.show("Press one more time to exit", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        "'뒤로' 버튼을 한 번 더 누르시면 종료됩니다",
+        ToastAndroid.SHORT
+      );
     } else if (backPressCount === 1) {
       BackHandler.exitApp();
     }

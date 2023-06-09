@@ -94,7 +94,8 @@ export default function Register({ navigation, route }) {
       //user 권한 부여
       user["authority"] = "user";
       //참가중인 서버
-      user["joined_server"] = "";
+      user["joinedServer"] = "";
+      user["joinedServerTeam"] = "";
       console.log("🚀 ~ file: Register.js:68 ~ register ~ user:", user);
       firebase_db
         .ref("/project_hi/user/" + userUniqueId)

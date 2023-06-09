@@ -1,0 +1,19 @@
+{
+  "server": {
+    "name": "",
+    "password": "",
+    "producer": "",
+    "content": "",
+    "team": {}
+  },
+  "team": {
+    "name": "",
+    "user": [],
+    "chat": {},
+    "property": {
+      "gold": 0,
+      "jem": 0
+    },
+    "inventory": {}
+  }
+}

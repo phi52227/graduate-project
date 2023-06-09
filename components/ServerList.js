@@ -52,7 +52,7 @@ export default function ServerList({ navigation }) {
           .once("value")
           .then((snapshot) => {
             let userData = snapshot.val();
-            let userJoinedServer = userData["joined_server"];
+            let userJoinedServer = userData["joinedServer"];
             resolve(userJoinedServer);
           });
       } catch (err) {
@@ -132,7 +132,10 @@ export default function ServerList({ navigation }) {
           <View
             style={[
               styles.serverContainer,
-              { borderBottomWidth: 1, borderBottomColor: "#1c1c1c" },
+              {
+                borderBottomWidth: list.length - 1 !== number ? 1 : 0,
+                borderBottomColor: "#1c1c1c",
+              },
             ]}
             key={number}
           >
@@ -183,13 +186,13 @@ const styles = StyleSheet.create({
   serverListContainer: {
     width: "100%",
     flex: 1,
-    paddingHorizontal: 3,
+    paddingHorizontal: 5,
   },
   serverContainer: {
     width: "100%",
     height: 60,
     flexDirection: "row",
-    paddingVertical: 4,
+    paddingVertical: 5,
   },
   ServerLeftView: {
     height: "100%",
