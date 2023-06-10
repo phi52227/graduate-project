@@ -1,83 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ToastAndroid,
-} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Modal from "react-native-modal";
-import ChangeImage from "./ChangeImage";
-import data from "../profileImg.json";
 import { firebase_db } from "../firebaseConfig";
-import * as Application from "expo-application";
-const isIOS = Platform.OS === "ios";
+import ServerCreateStore from "./ServerCreateStore";
+import { ScrollView } from "react-native-gesture-handler";
 
-export default function ModalsettingIcon(props) {
-  const [changeImage, setChangeImage] = useState([]);
-  const [changeImageIdx, setChangeImageIdx] = useState([]);
-  const [userData, setUserData] = useState([]);
+export default function ModalContentDesc(props) {
+  const { pickedContent } = ServerCreateStore();
+  const contents = props.contentState;
+  const desc = contents[pickedContent];
 
-  useEffect(() => {
-    getDevice().then(getUserInfo).then(setUserData);
-  }, []);
-
-  function touchFunction(source, idx) {
-    setChangeImage(source);
-    setChangeImageIdx(idx);
-  }
-
-  const getDevice = () =>
-    new Promise((resolve, reject) => {
-      if (isIOS) {
-        let iosId = Application.getIosIdForVendorAsync();
-        userUniqueId = iosId;
-      } else {
-        userUniqueId = Application.androidId;
-      }
-      resolve(userUniqueId);
-    });
-
-  const getUserInfo = (userDevice) =>
-    new Promise((resolve, reject) => {
-      try {
-        firebase_db
-          .ref("/project_hi/user/" + userDevice)
-          .once("value")
-          .then((snapshot) => {
-            let userInfo = snapshot.val();
-            resolve(userInfo);
-          });
-      } catch (err) {
-        console.error(err);
-      }
-    });
-
-  const saveFunction = (image, idx) => {
-    //인수를 데이터베이스에 저장하고 페이지 전환하기
-    getDevice().then((userUniqueId) => {
-      let user = userData;
-      user.profileImg = image;
-      user.imageIdx = idx;
-      firebase_db
-        .ref("/project_hi/user/" + userUniqueId)
-        .set(user, function (error) {
-          console.log("🚀 ~ file: ModalSettingIcon.js:66 ~ user:", user);
-          if (error)
-            console.log("🚀 ~ file: ModalSettingIcon.js:54 ~ error:", error);
-        });
-      props.modalVisible();
-      if (Platform.OS === "android") {
-        ToastAndroid.show(
-          "프로필 이미지가 변경되었습니다.",
-          ToastAndroid.SHORT
-        );
-      } else {
-        Alert.alert("프로필 이미지가 변경되었습니다.");
-      }
-      props.refresh(changeImage);
-    });
+  const saveFunction = () => {
+    props.modalVisible("basicInfoInput");
   };
 
   return (
@@ -92,10 +26,16 @@ export default function ModalsettingIcon(props) {
         style={styles.modalOverlay}
       />
       <View style={styles.modalContainer}>
-        <ChangeImage
-          content={data.image}
-          touchFunction={(value, idx) => touchFunction(value, idx)}
-        />
+        <ScrollView>
+          <View style={styles.contentView}>
+            <Text style={styles.titleText}>{desc?.name}</Text>
+            <Image
+              source={{ uri: desc?.image }}
+              style={styles.imageContainer}
+            />
+            <Text style={styles.descText}>{desc?.desc}</Text>
+          </View>
+        </ScrollView>
         <View style={styles.buttonView}>
           <TouchableOpacity
             style={styles.button}
@@ -105,9 +45,9 @@ export default function ModalsettingIcon(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => saveFunction(changeImage, changeImageIdx)}
+            onPress={() => saveFunction()}
           >
-            <Text style={styles.buttonText}>저장</Text>
+            <Text style={styles.buttonText}>다음</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -133,18 +73,25 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
     marginVertical: "20%",
   },
+  contentView: {
+    width: "100%",
+    flex: 1,
+    alignItems: "center",
+    padding: 20,
+  },
   buttonView: {
     width: "90%",
     height: "10%",
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
-    marginBottom: 10,
+    marginVertical: 20,
     alignSelf: "center",
   },
   button: {
     width: "45%",
     height: 45,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -152,5 +99,23 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     fontWeight: "700",
+  },
+  titleText: {
+    fontSize: 30,
+    fontWeight: "700",
+    marginTop: 10,
+  },
+  descText: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 10,
+    flexWrap: "wrap",
+  },
+  imageContainer: {
+    width: "70%",
+    aspectRatio: 1 / 1,
+    borderRadius: 10,
+    borderWidth: 2,
+    marginVertical: 20,
   },
 });

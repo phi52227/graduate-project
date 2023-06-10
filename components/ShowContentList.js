@@ -1,19 +1,66 @@
 import React, { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-export default function ShowContentList({ navigation, contentList }) {
+import { useEffect, useState } from "react";
+import { firebase_db } from "../firebaseConfig";
+import ModalContentDesc from "./ModalContentDesc";
+import ServerCreateStore from "./ServerCreateStore";
+
+export default function ShowContentList(props) {
+  // 이것도 zustand 로 바꾸기
+  const contentList = props.contentList;
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [contentDesc, setContentDesc] = useState([]);
+
+  const { setPickedContent, setTeamNumber } = ServerCreateStore();
+
+  useEffect(() => {
+    getContentDesc().then(setContentDesc);
+  }, []);
+
+  const getContentDesc = () =>
+    new Promise((resolve, reject) => {
+      try {
+        firebase_db
+          .ref("/project_hi/contents/")
+          .once("value")
+          .then((snapshot) => {
+            let obj = snapshot.val();
+            resolve(obj);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+  const modalVisible = (stage) => {
+    setIsModalVisible(!isModalVisible);
+    if (stage?.length > 0) {
+      props.refreshStage(stage);
+    }
+  };
+
   const showContents = () => {
     let arr = [];
 
     for (let i = 0; i < contentList.length; i++) {
       arr.push(
         <TouchableOpacity
-          onPress={() => console.log(contentList[i])}
+          onPress={() => {
+            setPickedContent(contentList[i]);
+            modalVisible();
+          }}
           key={i}
           style={styles.contentBtn}
         >
           <Text style={styles.contentText} key={i}>
             {contentList[i]}
           </Text>
+          <ModalContentDesc
+            isModalVisible={isModalVisible}
+            modalVisible={modalVisible}
+            contentState={contentDesc}
+          />
         </TouchableOpacity>
       );
     }

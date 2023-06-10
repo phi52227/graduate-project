@@ -19,10 +19,16 @@ const theme = Appearance.getColorScheme();
 
 export default function IntroPage({ navigation, route }) {
   const [isId, setIsId] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    getDevice().then(checkIsInfo).then(checkIsID);
+    getDevice().then(checkIsInfo).then(check);
   }, []);
+
+  const check = (bool) => {
+    checkIsID(bool);
+    setIsLoading(true);
+  };
 
   const getDevice = () =>
     new Promise((resolve, reject) => {
@@ -60,11 +66,12 @@ export default function IntroPage({ navigation, route }) {
   };
 
   const start = () => {
-    console.log("🚀 ~ file: IntroPage.js:69 ~ start ~ isId:", isId);
-    if (isId) {
-      navigation.reset({ routes: [{ name: "ServerChoice" }] });
-    } else {
-      navigation.reset({ routes: [{ name: "Register" }] });
+    if (isLoading) {
+      if (isId) {
+        navigation.reset({ routes: [{ name: "ServerChoice" }] });
+      } else {
+        navigation.reset({ routes: [{ name: "Register" }] });
+      }
     }
   };
 
