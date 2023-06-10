@@ -102,12 +102,16 @@ export default function GetBasicInfo(props) {
             position={Platform.OS === "android" ? "leading" : "trailing"}
             color="blue"
             style={{ marginHorizontal: "3%", marginVertical: 2 }}
+            key={"Radio" + i}
           />
         );
       }
     } else {
       arr.push(
-        <Text style={styles.contentText} key={teams[0]}>
+        <Text
+          style={[styles.contentText, { fontSize: 20, color: "blue" }]}
+          key={"textTeam"}
+        >
           이 컨텐츠는 {checked}팀용 입니다
         </Text>
       );
@@ -233,7 +237,9 @@ export default function GetBasicInfo(props) {
                   changeName("");
                 }}
               />
-              <Text style={styles.messageText}>{serverNameMessage}</Text>
+              <Text style={styles.messageText} key={"serverNameMessage"}>
+                {serverNameMessage}
+              </Text>
 
               <Text style={styles.contentText}>비밀번호</Text>
               <TextInput
@@ -248,7 +254,9 @@ export default function GetBasicInfo(props) {
                   changePassword("");
                 }}
               />
-              <Text style={styles.messageText}>{serverPasswordMessage}</Text>
+              <Text style={styles.messageText} key={"serverPasswordMessage"}>
+                {serverPasswordMessage}
+              </Text>
 
               <Text style={styles.contentText}>비밀번호 확인</Text>
               <TextInput
@@ -268,6 +276,7 @@ export default function GetBasicInfo(props) {
                   styles.messageText,
                   { color: isPasswordCheck ? "green" : "red" },
                 ]}
+                key={"serverPasswordCheckMessage"}
               >
                 {serverPasswordCheckMessage}
               </Text>
@@ -277,6 +286,7 @@ export default function GetBasicInfo(props) {
               <RadioButton.Group
                 onValueChange={(value) => setChecked(value)}
                 value={checked}
+                key={"radio"}
               >
                 {teamRadio(teamArr)}
               </RadioButton.Group>

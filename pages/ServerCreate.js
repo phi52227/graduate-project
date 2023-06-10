@@ -18,6 +18,8 @@ import MainTitle from "../components/MainTitle";
 import DoubleTapToClose from "../components/DoubleTapToClose";
 import ShowContentList from "../components/ShowContentList";
 import GetBasicInfo from "../components/GetBasicInfo";
+import TeamSetting from "../components/TeamSetting";
+import ContentSetting from "../components/ContentSetting";
 
 import { firebase_db } from "../firebaseConfig";
 import * as Application from "expo-application";
@@ -91,9 +93,20 @@ export default function ServerChoice({ navigation, route }) {
         />
       );
     } else if (createStage == "teamSetting") {
-      //sss
-    } else {
-      //asdasd
+      arr.push(
+        <TeamSetting
+          key={createStage}
+          refreshStage={(value) => refreshStage(value)}
+        />
+      );
+    } else if (createStage == "contentSetting") {
+      arr.push(
+        <ContentSetting
+          key={createStage}
+          navigation={navigation}
+          refreshStage={(value) => refreshStage(value)}
+        />
+      );
     }
     return arr;
   };

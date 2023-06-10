@@ -3,7 +3,7 @@ import { create } from "zustand";
 const ServerCreateStore = create((set) => ({
   pickedContent: "",
   basicInfo: {},
-  teamNumber: 2,
+  teamNumber: 0,
   setPickedContent: (content) =>
     set({
       pickedContent: content,

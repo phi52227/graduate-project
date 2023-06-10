@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
@@ -14,7 +15,13 @@ import ServerList from "../components/ServerList";
 import DoubleTapToClose from "../components/DoubleTapToClose";
 
 export default function ServerChoice({ navigation, route }) {
+  const [haveServer, setHaveServer] = useState(false);
+
   useEffect(() => {}, []);
+
+  const haveServerTrue = () => {
+    setHaveServer(true);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -22,14 +29,18 @@ export default function ServerChoice({ navigation, route }) {
       <MainTitle text={"서버 선택 화면"} navigation={navigation} />
       <Profile />
       <View style={styles.scrollview}>
-        <ServerList navigation={navigation} />
+        <ServerList navigation={navigation} haveServerTrue={haveServerTrue} />
       </View>
       <View style={styles.unnderScroll}>
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.4}
           onPress={() => {
-            navigation.navigate("ServerCreate");
+            if (!haveServer) {
+              navigation.navigate("ServerCreate");
+            } else {
+              Alert.alert("참가 중인 서버가 있으면\n서버를 생성할 수 없습니다");
+            }
           }}
         >
           <Text style={styles.buttonText}>서버 생성</Text>

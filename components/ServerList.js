@@ -5,7 +5,7 @@ import * as Application from "expo-application";
 import { ScrollView } from "react-native-gesture-handler";
 const isIOS = Platform.OS === "ios";
 
-export default function ServerList({ navigation }) {
+export default function ServerList({ navigation, haveServerTrue }) {
   const [userJoinedServer, setUserJoinedServer] = useState([]);
   const [serverList, setServerList] = useState([]);
   const [isJoinedServer, setIsJoinedServer] = useState(false);
@@ -64,6 +64,7 @@ export default function ServerList({ navigation }) {
     new Promise((resolve, reject) => {
       if (serverName.length > 0) {
         setIsJoinedServer(true);
+        haveServerTrue();
         try {
           firebase_db
             .ref("/project_hi/server/" + serverName)
@@ -91,7 +92,10 @@ export default function ServerList({ navigation }) {
           }
           key={-1}
         >
-          <View style={styles.serverContainer} key={-1}>
+          <View
+            style={[styles.serverContainer, { backgroundColor: "#E0F8F7" }]}
+            key={-1}
+          >
             <View style={styles.ServerLeftView}>
               <Text style={styles.ServerText}>{userJoinedServer.name}</Text>
             </View>
@@ -115,40 +119,50 @@ export default function ServerList({ navigation }) {
 
   const showAllServer = () => {
     let arr = [];
-    let list = Object.keys(serverList);
+    if (serverList) {
+      let list = Object.keys(serverList);
 
-    for (let server in serverList) {
-      let number = list.indexOf(server);
-      arr.push(
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("ServerJoin", {
-              name: serverList[server].name,
-              password: serverList[server].password,
-            })
-          }
-          key={number}
-        >
-          <View
-            style={[
-              styles.serverContainer,
-              {
-                borderBottomWidth: list.length - 1 !== number ? 1 : 0,
-                borderBottomColor: "#1c1c1c",
-              },
-            ]}
+      for (let server in serverList) {
+        let number = list.indexOf(server);
+        arr.push(
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("ServerJoin", {
+                name: serverList[server].name,
+                password: serverList[server].password,
+              })
+            }
             key={number}
           >
-            <View style={styles.ServerLeftView}>
-              <Text style={styles.ServerText}>{serverList[server].name}</Text>
+            <View
+              style={[
+                styles.serverContainer,
+                {
+                  borderBottomWidth: list.length - 1 !== number ? 1 : 0,
+                  borderBottomColor: "#1c1c1c",
+                },
+              ]}
+              key={number}
+            >
+              <View style={styles.ServerLeftView}>
+                <Text style={styles.ServerText}>{serverList[server].name}</Text>
+              </View>
+              <View style={styles.ServerRightView}>
+                <Text style={styles.ServerText}>
+                  {serverList[server].producer}
+                </Text>
+              </View>
             </View>
-            <View style={styles.ServerRightView}>
-              <Text style={styles.ServerText}>
-                {serverList[server].producer}
-              </Text>
-            </View>
+          </TouchableOpacity>
+        );
+      }
+    } else {
+      arr.push(
+        <View style={styles.serverContainer} key={0}>
+          <View style={[styles.ServerLeftView, { alignItems: "center" }]}>
+            <Text style={styles.ServerText}>생성된 서버가 없습니다</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       );
     }
     return arr;
@@ -181,18 +195,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 60,
     borderBottomWidth: 2,
-    paddingHorizontal: 5,
   },
   serverListContainer: {
     width: "100%",
     flex: 1,
-    paddingHorizontal: 5,
   },
   serverContainer: {
     width: "100%",
     height: 60,
     flexDirection: "row",
     paddingVertical: 5,
+    paddingHorizontal: 5,
   },
   ServerLeftView: {
     height: "100%",

@@ -6,7 +6,6 @@ import ModalContentDesc from "./ModalContentDesc";
 import ServerCreateStore from "./ServerCreateStore";
 
 export default function ShowContentList(props) {
-  // 이것도 zustand 로 바꾸기
   const contentList = props.contentList;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
