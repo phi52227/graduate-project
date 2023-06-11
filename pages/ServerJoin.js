@@ -16,6 +16,10 @@ import MainTitle from "../components/MainTitle";
 import Profile from "../components/Profile";
 import DoubleTapToClose from "../components/DoubleTapToClose";
 
+import { firebase_db } from "../firebaseConfig";
+import * as Application from "expo-application";
+const isIOS = Platform.OS === "ios";
+
 export default function ServerJoin({ navigation, route }) {
   const [text, setText] = useState("비밀번호");
   const [passwordWrong, setWrong] = useState("");
@@ -23,8 +27,34 @@ export default function ServerJoin({ navigation, route }) {
   const name = route.params.name;
   const password = route.params.password;
 
+  const getDevice = () =>
+    new Promise((resolve, reject) => {
+      if (isIOS) {
+        let iosId = Application.getIosIdForVendorAsync();
+        userUniqueId = iosId;
+      } else {
+        userUniqueId = Application.androidId;
+      }
+      resolve(userUniqueId);
+    });
+
+  const setJoinedServer = (userUniqueId) => {
+    try {
+      firebase_db
+        .ref("/project_hi/user/" + userUniqueId + "/joinedServer")
+        .set(name, function (error) {
+          if (error) console.error(error);
+          navigation.reset({ routes: [{ name: "ServerChoice" }] });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const checkPW = (pw) => {
-    password == pw ? console.log("확인") : setWrong("비밀번호가 틀렸습니다");
+    password == pw
+      ? getDevice().then(setJoinedServer)
+      : setWrong("비밀번호가 틀렸습니다");
   };
 
   return (

@@ -4,10 +4,10 @@ import { StatusBar } from "expo-status-bar";
 //메인에 세팅할 네비게이션 도구들을 가져옵니다.
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import StackNavigator from "./navigation/StackNavigator";
-import * as Application from "expo-application";
 import AppContext from "./components/AppContext";
 
-const isIOS = Platform.OS === "ios";
+//문제 생기면 이거 주석 해제해보기
+// import "react-native-gesture-hanrdler";
 
 export default function App() {
   // console.disableYellowBox = true;

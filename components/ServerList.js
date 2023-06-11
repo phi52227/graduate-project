@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import { firebase_db } from "../firebaseConfig";
 import * as Application from "expo-application";
 import { ScrollView } from "react-native-gesture-handler";
@@ -154,19 +154,25 @@ export default function ServerList({ navigation, haveServerTrue }) {
         let number = list.indexOf(server);
         arr.push(
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ServerJoin", {
-                name: serverList[server].name,
-                password: serverList[server].password,
-              })
-            }
+            onPress={() => {
+              if (isJoinedServer) {
+                Alert.alert(
+                  "참가 중인 서버가 있으면\n새로운 서버에 참가할 수 없습니다"
+                );
+              } else {
+                navigation.navigate("ServerJoin", {
+                  name: serverList[server].name,
+                  password: serverList[server].password,
+                });
+              }
+            }}
             key={number}
           >
             <View
               style={[
                 styles.serverContainer,
                 {
-                  borderBottomWidth: list.length - 1 !== number ? 1 : 0,
+                  // borderBottomWidth: list.length - 1 !== number ? 1 : 0,
                   borderBottomColor: "#1c1c1c",
                 },
               ]}
@@ -234,6 +240,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 5,
     paddingHorizontal: 5,
+    borderBottomWidth: 1,
   },
   ServerLeftView: {
     height: "100%",

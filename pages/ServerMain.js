@@ -74,6 +74,7 @@ export default function ServerMain({ navigation }) {
           <MainTitle
             text={serverName + " - " + teamName}
             navigation={navigation}
+            goTo={"ServerChoice"}
           />
           <Profile />
         </View>
@@ -88,27 +89,5 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-  scrollview: {
-    width: "90%",
-    flex: 1,
-    marginVertical: 20,
-    borderWidth: 2,
-    alignContent: "center",
-  },
-  contentBtn: {
-    width: "70%",
-    aspectRatio: 3 / 1,
-    borderWidth: 2,
-    borderRadius: 20,
-    alignContent: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    margin: 20,
-  },
-  contentText: {
-    fontSize: 24,
-    fontWeight: "500",
-    textAlign: "center",
   },
 });
