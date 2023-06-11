@@ -117,6 +117,7 @@ export default function TeamSetting(props) {
 
   const next = () => {
     let canNext;
+    let teamObj = {};
     for (let check in isTrue) {
       if (isTrue[check]) {
         canNext = true;
@@ -138,12 +139,14 @@ export default function TeamSetting(props) {
             break;
           }
         }
+        teamObj[teamNames[i]] = props.teamSetting;
       }
       if (!dupCheck) {
         props.refreshStage("contentSetting");
         console.log("next");
         let info = basicInfo;
-        info.team = teamNames;
+        info.team = teamObj;
+
         setBasicInfo(info);
         console.log("🚀 ~ file: TeamSetting.js:149 ~ next ~ info:", info);
       }

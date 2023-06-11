@@ -9,13 +9,14 @@ export default function ServerList({ navigation, haveServerTrue }) {
   const [userJoinedServer, setUserJoinedServer] = useState([]);
   const [serverList, setServerList] = useState([]);
   const [isJoinedServer, setIsJoinedServer] = useState(false);
-
+  const [joinedServerTeam, setJoinedServerTeam] = useState([]);
   useEffect(() => {
     getDevice()
       .then(getUserJoinedServerName)
       .then(getUserJoinedServer)
       .then(setUserJoinedServer);
     getServers().then(setServerList);
+    getDevice().then(getUserJoinedServerTeam).then(setJoinedServerTeam);
   }, []);
 
   const getDevice = () =>
@@ -60,9 +61,25 @@ export default function ServerList({ navigation, haveServerTrue }) {
       }
     });
 
+  const getUserJoinedServerTeam = (user) =>
+    new Promise((resolve, reject) => {
+      try {
+        firebase_db
+          .ref("/project_hi/user/" + user)
+          .once("value")
+          .then((snapshot) => {
+            let userData = snapshot.val();
+            let userJoinedServerTeam = userData["joinedServerTeam"];
+            resolve(userJoinedServerTeam);
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
   const getUserJoinedServer = (serverName) =>
     new Promise((resolve, reject) => {
-      if (serverName.length > 0) {
+      if (serverName?.length > 0) {
         setIsJoinedServer(true);
         haveServerTrue();
         try {
@@ -79,17 +96,26 @@ export default function ServerList({ navigation, haveServerTrue }) {
       }
     });
 
+  const joinServer = (name, team) => {
+    if (team) {
+      navigation.reset({
+        routes: [{ name: "ServerMain", params: { name: name } }],
+      });
+    } else {
+      // navigation.reset({
+      //   routes: [{ name: "TeamChoice", params: { name: name } }],
+      // });
+      navigation.navigate("TeamChoice", { name: name });
+    }
+  };
+
   const showJoinedServer = () => {
     let arr = [];
     if (isJoinedServer) {
+      let name = userJoinedServer?.name;
       arr.push(
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("ServerJoin", {
-              name: userJoinedServer.name,
-              password: userJoinedServer.password,
-            })
-          }
+          onPress={() => joinServer(name, joinedServerTeam)}
           key={-1}
         >
           <View
@@ -97,10 +123,12 @@ export default function ServerList({ navigation, haveServerTrue }) {
             key={-1}
           >
             <View style={styles.ServerLeftView}>
-              <Text style={styles.ServerText}>{userJoinedServer.name}</Text>
+              <Text style={styles.ServerText}>{userJoinedServer?.name}</Text>
             </View>
             <View style={styles.ServerRightView}>
-              <Text style={styles.ServerText}>{userJoinedServer.producer}</Text>
+              <Text style={styles.ServerText}>
+                {userJoinedServer?.producer}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>

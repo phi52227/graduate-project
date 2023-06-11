@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Modal from "react-native-modal";
-import { firebase_db } from "../firebaseConfig";
-import ServerCreateStore from "./ServerCreateStore";
-import { ScrollView } from "react-native-gesture-handler";
 
-export default function ModalContentDesc(props) {
-  const { pickedContent } = ServerCreateStore();
-  const contents = props.contentState;
-  const desc = contents[pickedContent];
+export default function ModalTeamChoice(props) {
   const modalVisible = props.isModalVisible[props.num];
-  const saveFunction = () => {
-    props.modalVisible("basicInfoInput");
-  };
 
   return (
     <Modal animationType={"fade"} transparent={true} visible={modalVisible}>
@@ -22,28 +13,29 @@ export default function ModalContentDesc(props) {
         style={styles.modalOverlay}
       />
       <View style={styles.modalContainer}>
-        <ScrollView>
-          <View style={styles.contentView}>
-            <Text style={styles.titleText}>{desc?.name}</Text>
-            <Image
-              source={{ uri: desc?.image }}
-              style={styles.imageContainer}
-            />
-            <Text style={styles.descText}>{desc?.desc}</Text>
-          </View>
-        </ScrollView>
+        <View style={styles.contentView}>
+          <Text style={styles.titleText}>{"팀 : " + props.teamName}</Text>
+          <Text style={styles.descText}>
+            {props.teamName +
+              "을(를) 선택하셨습니다\n" +
+              props.teamName +
+              "에 참여하시겠습니까?"}
+          </Text>
+        </View>
         <View style={styles.buttonView}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => props.modalVisible()}
+            onPress={() => {
+              props.modalVisible();
+            }}
           >
             <Text style={styles.buttonText}>취소</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => saveFunction()}
+            onPress={() => props.okFunction()}
           >
-            <Text style={styles.buttonText}>다음</Text>
+            <Text style={styles.buttonText}>확인</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -67,12 +59,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
     borderWidth: 2,
     marginHorizontal: "5%",
-    marginVertical: "20%",
+    marginVertical: "40%",
   },
   contentView: {
     width: "100%",
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   buttonView: {
@@ -97,21 +90,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   titleText: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: "700",
     marginTop: 10,
   },
   descText: {
     fontSize: 20,
     fontWeight: "700",
-    marginTop: 10,
+    marginTop: 50,
     flexWrap: "wrap",
-  },
-  imageContainer: {
-    width: "70%",
-    aspectRatio: 1 / 1,
-    borderRadius: 10,
-    borderWidth: 2,
-    marginVertical: 20,
   },
 });

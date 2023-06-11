@@ -11,8 +11,6 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import ServerCreateStore from "../components/ServerCreateStore";
 import Profile from "../components/Profile";
 import MainTitle from "../components/MainTitle";
 import DoubleTapToClose from "../components/DoubleTapToClose";
@@ -22,18 +20,13 @@ import TeamSetting from "../components/TeamSetting";
 import ContentSetting from "../components/ContentSetting";
 
 import { firebase_db } from "../firebaseConfig";
-import * as Application from "expo-application";
-const isIOS = Platform.OS === "ios";
 
-export default function ServerChoice({ navigation, route }) {
+export default function ServerChoice({ navigation }) {
   const [serverSetting, setServerSetting] = useState([]);
   const [teamSetting, setTeamSetting] = useState([]);
-  const [teamNum, setTeamNum] = useState([]);
   const [contentList, setContentList] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [createStage, setCreateStage] = useState(["contentPick"]);
-
-  const { pickedContent } = ServerCreateStore();
 
   useEffect(() => {
     getJsonUrl().then(getJson);
@@ -97,6 +90,7 @@ export default function ServerChoice({ navigation, route }) {
         <TeamSetting
           key={createStage}
           refreshStage={(value) => refreshStage(value)}
+          teamSetting={teamSetting}
         />
       );
     } else if (createStage == "contentSetting") {

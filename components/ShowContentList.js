@@ -8,14 +8,27 @@ import ServerCreateStore from "./ServerCreateStore";
 export default function ShowContentList(props) {
   const contentList = props.contentList;
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState([]);
+  console.log(
+    "🚀 ~ file: showContentList.js:12 ~ ShowContentList ~ isModalVisible:",
+    isModalVisible
+  );
   const [contentDesc, setContentDesc] = useState([]);
 
   const { setPickedContent, setTeamNumber } = ServerCreateStore();
 
   useEffect(() => {
     getContentDesc().then(setContentDesc);
+    firstSetting();
   }, []);
+
+  const firstSetting = () => {
+    setIsModalVisible(
+      contentList.map(() => {
+        return false;
+      })
+    );
+  };
 
   const getContentDesc = () =>
     new Promise((resolve, reject) => {
@@ -33,10 +46,16 @@ export default function ShowContentList(props) {
     });
 
   const modalVisible = (stage) => {
-    setIsModalVisible(!isModalVisible);
+    firstSetting();
     if (stage?.length > 0) {
       props.refreshStage(stage);
     }
+  };
+
+  const thisModalVisible = (num) => {
+    let modalVisibleList = isModalVisible;
+    modalVisibleList[num] = true;
+    setIsModalVisible(modalVisibleList);
   };
 
   const showContents = () => {
@@ -47,7 +66,7 @@ export default function ShowContentList(props) {
         <TouchableOpacity
           onPress={() => {
             setPickedContent(contentList[i]);
-            modalVisible();
+            thisModalVisible(i);
           }}
           key={i}
           style={styles.contentBtn}
@@ -59,6 +78,7 @@ export default function ShowContentList(props) {
             isModalVisible={isModalVisible}
             modalVisible={modalVisible}
             contentState={contentDesc}
+            num={i}
           />
         </TouchableOpacity>
       );
