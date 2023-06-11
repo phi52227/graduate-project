@@ -8,13 +8,13 @@ import * as Application from "expo-application";
 const isIOS = Platform.OS === "ios";
 //myContext로 불러오는 부분 다 firebase에서 가져오도록 수정 예정
 
-export default function Profile({ navigation, route }) {
+export default function Profile({ text }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [userImg, setUserImg] = useState(
     "https://firebasestorage.googleapis.com/v0/b/project-hi-60da4.appspot.com/o/images%2Fwhite.png?alt=media&token=7d8db406-30d2-4332-9db6-c01bd65c1a32&_gl=1*1cbag1p*_ga*MTMxODcyMjYyNC4xNjgyNjY0NzY4*_ga_CW55HF8NVT*MTY4NjA4MjAyMy4xNy4xLjE2ODYwODIwNzguMC4wLjA."
   );
   const [userName, setUserName] = useState([]);
-
+  const [isServerIn, setIsServerIn] = useState(false);
   useEffect(() => {
     getDevice()
       .then(getUserInfo)
@@ -22,6 +22,7 @@ export default function Profile({ navigation, route }) {
         setUserImg(userInfo.profileImg);
         setUserName(userInfo.name);
       });
+    if (text?.length > 0) setIsServerIn(true);
   }, []);
 
   const getDevice = () =>
@@ -64,24 +65,30 @@ export default function Profile({ navigation, route }) {
         <Image style={styles.profileImg} source={{ uri: userImg }} />
         <Text style={styles.profileName}>{userName}</Text>
       </View>
-      <View style={styles.profileViewRight}>
-        <TouchableOpacity
-          style={styles.settingContainer}
-          onPress={() => modalVisible()}
-        >
-          <Image
-            style={styles.settingImage}
-            source={{
-              uri: "https://cdn.pixabay.com/photo/2015/12/04/22/23/gear-1077563_1280.png",
-            }}
-          />
-          <ModalsettingIcon
-            isModalVisible={isModalVisible}
-            modalVisible={modalVisible}
-            refresh={(image) => refresh(image)}
-          />
-        </TouchableOpacity>
-      </View>
+      {!isServerIn ? (
+        <View style={styles.profileViewRight}>
+          <TouchableOpacity
+            style={styles.settingContainer}
+            onPress={() => modalVisible()}
+          >
+            <Image
+              style={styles.settingImage}
+              source={{
+                uri: "https://cdn.pixabay.com/photo/2015/12/04/22/23/gear-1077563_1280.png",
+              }}
+            />
+            <ModalsettingIcon
+              isModalVisible={isModalVisible}
+              modalVisible={modalVisible}
+              refresh={(image) => refresh(image)}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.profileViewRight}>
+          <Text style={styles.serverText}>{text}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
   },
   profileViewLeft: {
     height: "100%",
-    flex: 7,
+    flex: 3,
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -128,5 +135,11 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "center",
     marginLeft: 5,
+  },
+  serverText: {
+    fontSize: 20,
+    fontWeight: "400",
+    textAlign: "right",
+    marginRight: 5,
   },
 });

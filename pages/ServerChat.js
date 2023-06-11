@@ -17,7 +17,7 @@ import { firebase_db } from "../firebaseConfig";
 import * as Application from "expo-application";
 const isIOS = Platform.OS === "ios";
 
-export default function ServerMain({ navigation }) {
+export default function ServerChat({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [serverName, setServerName] = useState([]);
   const [teamName, setTeamName] = useState([]);
@@ -73,7 +73,7 @@ export default function ServerMain({ navigation }) {
           <DoubleTapToClose navigation={navigation} />
           <Profile text={serverName + " - " + teamName} />
           <View style={styles.contentview}>
-            <Text style={styles.contentText}>서버 메인 화면</Text>
+            <Text style={styles.contentText}>서버 채팅 화면</Text>
           </View>
         </View>
       )}

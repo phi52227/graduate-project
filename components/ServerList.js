@@ -98,9 +98,10 @@ export default function ServerList({ navigation, haveServerTrue }) {
 
   const joinServer = (name, team) => {
     if (team) {
-      navigation.reset({
-        routes: [{ name: "ServerMain", params: { name: name } }],
-      });
+      // navigation.reset({
+      //   routes: [{ name: "ServerMain", params: { name: name } }],
+      // });
+      navigation.navigate("DrawerNavigator");
     } else {
       // navigation.reset({
       //   routes: [{ name: "TeamChoice", params: { name: name } }],
@@ -126,9 +127,7 @@ export default function ServerList({ navigation, haveServerTrue }) {
               <Text style={styles.ServerText}>{userJoinedServer?.name}</Text>
             </View>
             <View style={styles.ServerRightView}>
-              <Text style={styles.ServerText}>
-                {userJoinedServer?.producer}
-              </Text>
+              <Text style={styles.ServerText}>{userJoinedServer?.content}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -183,7 +182,7 @@ export default function ServerList({ navigation, haveServerTrue }) {
               </View>
               <View style={styles.ServerRightView}>
                 <Text style={styles.ServerText}>
-                  {serverList[server].producer}
+                  {serverList[server].content}
                 </Text>
               </View>
             </View>
@@ -244,7 +243,7 @@ const styles = StyleSheet.create({
   },
   ServerLeftView: {
     height: "100%",
-    flex: 5,
+    flex: 3,
     justifyContent: "center",
   },
   ServerRightView: {

@@ -27,36 +27,37 @@ export default function MainTitle({ navigation, text, goTo }) {
           <Text style={styles.backText}>{backText}</Text>
         </TouchableOpacity>
       );
-    } else if (goToWhere?.length > 0) {
-      return (
-        <TouchableOpacity
-          style={styles.touchBack}
-          onPress={() =>
-            Alert.alert(
-              "주의",
-              "서버 선택 화면으로 돌아가시겠습니까?",
-              [
-                // 버튼 배열
-                {
-                  text: "아니요", // 버튼 제목
-
-                  style: "cancel",
-                },
-                {
-                  text: "네",
-                  onPress: () =>
-                    navigation.reset({ routes: [{ name: goToWhere }] }),
-                }, //버튼 제목
-                // 이벤트 발생시 로그를 찍는다
-              ],
-              { cancelable: false }
-            )
-          }
-        >
-          <Text style={styles.backText}>{backText}</Text>
-        </TouchableOpacity>
-      );
     }
+    //  else if (goToWhere?.length > 0) {
+    //   return (
+    //     <TouchableOpacity
+    //       style={styles.touchBack}
+    //       onPress={() =>
+    //         Alert.alert(
+    //           "주의",
+    //           "서버 선택 화면으로 돌아가시겠습니까?",
+    //           [
+    //             // 버튼 배열
+    //             {
+    //               text: "아니요", // 버튼 제목
+
+    //               style: "cancel",
+    //             },
+    //             {
+    //               text: "네",
+    //               onPress: () =>
+    //                 navigation.reset({ routes: [{ name: goToWhere }] }),
+    //             }, //버튼 제목
+    //             // 이벤트 발생시 로그를 찍는다
+    //           ],
+    //           { cancelable: false }
+    //         )
+    //       }
+    //     >
+    //       <Text style={styles.backText}>{backText}</Text>
+    //     </TouchableOpacity>
+    //   );
+    // }
   };
 
   return (

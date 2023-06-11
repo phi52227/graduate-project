@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -51,9 +51,7 @@ export default function TeamChoice({ navigation, route }) {
       .ref("/project_hi/user/" + device + "/joinedServerTeam")
       .set(pickedTeam, function (error) {
         if (error) console.error(error);
-        navigation.reset({
-          routes: [{ name: "ServerMain" }],
-        });
+        navigation.navigate("DrawerNavigator");
       });
   };
 

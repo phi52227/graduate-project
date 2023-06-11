@@ -94,7 +94,7 @@ export default function IntroPage({ navigation, route }) {
           onPress={() => start()}
         >
           <View style={styles.titleview}>
-            <Text style={styles.title}>TITLE</Text>
+            <Text style={styles.title}>졸업{"\n"}프로젝트</Text>
           </View>
           <View style={styles.textview}>
             <Text style={styles.text}>Touch to START</Text>
@@ -121,12 +121,13 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   title: {
-    fontSize: 100,
+    fontSize: 90,
     fontWeight: "700",
+    textAlign: "center",
     justifyContent: "center",
   },
   text: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "700",
   },
   touchToStart: {

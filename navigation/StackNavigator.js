@@ -1,6 +1,7 @@
 import React from "react";
 //설치한 스택 네비게이션 라이브러리를 가져옵니다
 import { createStackNavigator } from "@react-navigation/stack";
+import DrawerNavigator from "./DrawNavigator";
 
 //페이지로 만든 컴포넌트들을 불러옵니다
 import IntroPage from "../pages/IntroPage";
@@ -8,7 +9,7 @@ import Register from "../pages/Register";
 import ServerChoice from "../pages/ServerChoice";
 import ServerCreate from "../pages/ServerCreate";
 import ServerJoin from "../pages/ServerJoin";
-import ServerMain from "../pages/ServerMain";
+// import ServerMain from "../pages/ServerMain";
 import TeamChoice from "../pages/TeamChoice";
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -31,6 +32,7 @@ const StackNavigator = () => {
         headerTintColor: "#FFFFFF",
         headerBackTitleVisible: false,
         headerShown: false,
+        gestureEnabled: false,
       }}
     >
       {/* 컴포넌트를 페이지로 만들어주는 엘리먼트에 끼워 넣습니다. 이 자체로 이제 페이지 기능을 합니다*/}
@@ -39,8 +41,13 @@ const StackNavigator = () => {
       <Stack.Screen name="ServerChoice" component={ServerChoice} />
       <Stack.Screen name="ServerCreate" component={ServerCreate} />
       <Stack.Screen name="ServerJoin" component={ServerJoin} />
-      <Stack.Screen name="ServerMain" component={ServerMain} />
+      {/* <Stack.Screen name="ServerMain" component={ServerMain} /> */}
       <Stack.Screen name="TeamChoice" component={TeamChoice} />
+      <Stack.Screen
+        name="DrawerNavigator"
+        component={DrawerNavigator}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
