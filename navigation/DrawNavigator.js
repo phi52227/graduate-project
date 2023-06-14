@@ -4,6 +4,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import ServerMain from "../pages/ServerMain";
 import ServerChat from "../pages/ServerChat";
+import ServerStore from "../pages/ServerStore";
 import { StatusBar } from "expo-status-bar";
 
 const Drawer = createDrawerNavigator();
@@ -31,6 +32,11 @@ const DrawerNavigator = () => {
         name="ServerChat"
         component={ServerChat}
         options={{ drawerLabel: "ServerChat" }}
+      />
+      <Drawer.Screen
+        name="ServerStore"
+        component={ServerStore}
+        options={{ drawerLabel: "ServerStore" }}
       />
     </Drawer.Navigator>
   );
